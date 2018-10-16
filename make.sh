@@ -183,16 +183,12 @@ build_minibase()
 config_init()
 {
 	if [ $DISTRO_DEFCONFIG ] && [ -e $CONFIGS_DIR/$DISTRO_DEFCONFIG ];then
-		if [ -e $DISTRO_CONFIG ];then
-			return
-		else
-			for line in $(cat $CONFIGS_DIR/$DISTRO_DEFCONFIG)
-			do
-				if [ $line ] && [ -e $CONFIGS_DIR/$line ];then
-					cat $CONFIGS_DIR/$line >> $DISTRO_CONFIG
-				fi
-			done
-		fi
+		for line in $(cat $CONFIGS_DIR/$DISTRO_DEFCONFIG)
+		do
+			if [ $line ] && [ -e $CONFIGS_DIR/$line ];then
+				cat $CONFIGS_DIR/$line >> $DISTRO_CONFIG
+			fi
+		done
 	else
 		echo "$DISTRO_DEFCONFIG is not a valid defconfig, please use defconfig in $CONFIGS_DIR/"
 	fi
