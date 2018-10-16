@@ -1,0 +1,320 @@
+#!/bin/bash
+
+DISTRO_DIR=$(dirname $(readlink -f "$0"))
+OUTPUT_DIR=$DISTRO_DIR/output
+BUILD_DIR=$OUTPUT_DIR/build
+TARGET_DIR=$OUTPUT_DIR/target
+CONFIGS_DIR=$DISTRO_DIR/configs
+PACKAGE_DIR=$DISTRO_DIR/package
+DOWNLOAD_DIR=$DISTRO_DIR/download
+MOUNT_DIR=$TARGET_DIR/distro
+MIRROR_FILE=$OUTPUT_DIR/.mirror
+ARCH_FILE=$OUTPUT_DIR/.arch
+DEFCONFIG_FILE=$OUTPUT_DIR/.defconfig
+DISTRO_CONFIG=$OUTPUT_DIR/.config
+ROOTFS_IMG=$DISTRO_DIR/rootfs.img
+DISTRO_DEFCONFIG=$1
+BUILD_PACKAGE=$1
+DISTRO_ARCH=$2
+QEMU_ARCH=aarch64
+DEFAULT_MIRROR=http://ftp.cn.debian.org/debian
+NETSELECT_APT_DEB=netselect-apt_0.3.ds1-28_all.deb
+NETSELECT_APT_URL=http://ftp.cn.debian.org/debian/pool/main/n/netselect/$NETSELECT_APT_DEB
+NETSELECT_DEB=netselect_0.3.ds1-28+b1_amd64.deb
+NETSELECT_URL=http://ftp.cn.debian.org/debian/pool/main/n/netselect/$NETSELECT_DEB
+DISTRO_MIRROR=$DEFAULT_MIRROR
+DISTRO_VERSION=buster
+DISTRO_OS=debian
+
+if [ $DISTRO_VERSION==buster ];then
+	DISTRO_OS=debian
+elif [ $DISTRO_VERSION==bionic ];then
+	DISTRO_OS=ubuntu
+fi
+
+log() {
+    local format="$1"
+    shift
+    printf -- "$format\n" "$@" >&2
+}
+
+die() {
+    local format="$1"
+    shift
+    log "E: $format" "$@"
+    exit 1
+}
+
+run() {
+    log "I: Running command: %s" "$*"
+    "$@"
+}
+
+clean()
+{
+	sudo rm -rf $OUTPUT_DIR
+}
+
+pack_squashfs()
+{
+	mksquashfs $TARGET_DIR $ROOTFS_IMG -noappend -comp gzip
+}
+
+pack_ext4()
+{
+	if [ -x $DISTRO_DIR/../device/rockchip/common/mke2img.sh ];then
+		sudo $DISTRO_DIR/../device/rockchip/common/mke2img.sh $ROOTFS_IMG $TARGET_DIR
+	else
+		SIZE=`du -sk --apparent-size $TARGET_DIR | cut --fields=1`
+		inode_counti=`find $TARGET_DIR | wc -l`
+		inode_counti=$[inode_counti+512]
+		EXTRA_SIZE=$[inode_counti*4]
+		SIZE=$[SIZE+EXTRA_SIZE]
+		genext2fs -b $SIZE -N $inode_counti -d $TARGET_DIR $ROOTFS_IMG
+		tune2fs -C 1 $ROOTFS_IMG
+		resize2fs -M $ROOTFS_IMG
+		e2fsck -fy $ROOTFS_IMG
+	fi
+}
+
+target_clean()
+{
+	sudo chroot $TARGET_DIR apt-get clean
+	sudo rm -rf $TARGET_DIR/usr/share/locale/*
+	sudo rm -rf $TARGET_DIR/usr/share/man/*
+	sudo rm -rf $TARGET_DIR/usr/share/doc/*
+	sudo rm -rf $TARGET_DIR/var/log/*
+	sudo rm -rf $TARGET_DIR/var/lib/apt/lists/*
+	sudo rm -rf $TARGET_DIR/var/cache/*
+}
+
+build_package()
+{
+	echo "build package: $1"
+	package=$1
+	if [ -x $PACKAGE_DIR/$package/make.sh ];then
+		sudo mount -o ro,bind $DISTRO_DIR $MOUNT_DIR
+		echo "execute $PACKAGE_DIR/$package/make.sh"
+		sudo chroot $TARGET_DIR bash /distro/package/$package/make.sh
+		if [ $? -ne 0 ]; then
+			echo "build package $package failed"
+			sudo umount $MOUNT_DIR
+			exit 1
+		fi
+		sudo umount $MOUNT_DIR
+	fi
+}
+
+build_packages()
+{
+	if [ -e $DISTRO_CONFIG ];then
+		for line in $(cat $DISTRO_CONFIG)
+		do
+			build_package $line
+		done
+	fi
+}
+
+make_sourcelist()
+{
+	echo "deb $DISTRO_MIRROR $DISTRO_VERSION main" > $BUILD_DIR/sourcelist/sources.list
+	echo "deb $DISTRO_MIRROR sid main" >> $BUILD_DIR/sourcelist/sources.list
+	chmod 644 $BUILD_DIR/sourcelist/sources.list
+	sudo chown root:root $BUILD_DIR/sourcelist/sources.list
+}
+sourcelist_init()
+{
+	if [ ! -d $BUILD_DIR/sourcelist ];then
+		mkdir $BUILD_DIR/sourcelist
+	fi
+
+	if [ ! -e $BUILD_DIR/sourcelist/sources.list ];then
+		echo "make source list"
+		make_sourcelist
+	fi
+
+	diff $BUILD_DIR/sourcelist/sources.list $TARGET_DIR/etc/apt/sources.list
+	if [ $? -eq 1 ] || [ ! -e $OUTPUT_DIR/.sourcelist.done ];then
+		sudo cp $BUILD_DIR/sourcelist/sources.list $TARGET_DIR/etc/apt/sources.list
+		echo "update package lists for target system"
+		sudo chroot $TARGET_DIR apt-get update
+		if [ $? -eq 0 ]; then
+			touch $OUTPUT_DIR/.sourcelist.done
+		fi
+	fi
+
+
+}
+
+build_minibase()
+{
+	which debootstrap >/dev/null 2>/dev/null || die "debootstrap isn't found in \$PATH, is debootstrap package installed?"
+
+	if ! which "qemu-$QEMU_ARCH-static" >/dev/null 2>&1; then
+		die "Sorry, couldn't find binary %s" "qemu-$QEMU_ARCH-static"
+	fi
+	
+	if [ -e $OUTPUT_DIR/.stage1.done ];then
+		echo "minibase stage1 already done. so skip it. please delete $OUTPUT_DIR/.stage1.done if you want to rebuild it"
+	else
+		sudo debootstrap --variant minbase --arch "$DISTRO_ARCH" --foreign $DISTRO_VERSION $TARGET_DIR $DISTRO_MIRROR
+		if [ $? -eq 0 ]; then
+			touch $OUTPUT_DIR/.stage1.done
+		else
+			exit 1
+		fi
+	fi
+	
+	sudo cp $(which "qemu-$QEMU_ARCH-static") $TARGET_DIR/usr/bin/
+
+	if [ -e $OUTPUT_DIR/.stage2.done ];then
+		echo "minibase stage2 already done. so skip it. please delete $OUTPUT_DIR/.stage2.done if you want to rebuild it"
+	else
+		sudo chroot $TARGET_DIR /debootstrap/debootstrap --second-stage
+		if [ $? -eq 0 ]; then
+			touch $OUTPUT_DIR/.stage2.done
+		else
+			exit 1
+		fi
+	fi
+
+}
+
+config_init()
+{
+	if [ $DISTRO_DEFCONFIG ] && [ -e $CONFIGS_DIR/$DISTRO_DEFCONFIG ];then
+		if [ -e $DISTRO_CONFIG ];then
+			return
+		else
+			for line in $(cat $CONFIGS_DIR/$DISTRO_DEFCONFIG)
+			do
+				if [ $line ] && [ -e $CONFIGS_DIR/$line ];then
+					cat $CONFIGS_DIR/$line >> $DISTRO_CONFIG
+				fi
+			done
+		fi
+	else
+		echo "$DISTRO_DEFCONFIG is not a valid defconfig, please use defconfig in $CONFIGS_DIR/"
+	fi
+}
+
+defconfig_init()
+{
+	if [ -z $DISTRO_DEFCONFIG ];then
+		if [ -e $DEFCONFIG_FILE ];then
+			DISTRO_DEFCONFIG=`cat $DEFCONFIG_FILE`
+			return
+		else
+			DISTRO_DEFCONFIG=default_defconfig
+			echo "$DISTRO_DEFCONFIG" > $DEFCONFIG_FILE
+		fi
+	else
+		echo "$DISTRO_DEFCONFIG" > $DEFCONFIG_FILE
+	fi
+}
+
+netselect_chkinstall()
+{
+	if [ -z `which netselect` ];then
+		wget -P $DOWNLOAD_DIR $NETSELECT_URL
+		sudo dpkg -i $DOWNLOAD_DIR/$NETSELECT_DEB
+	fi
+}
+
+netselect_apt_chkinstall()
+{
+	if [ -z `which netselect-apt` ];then
+		wget -P $DOWNLOAD_DIR $NETSELECT_APT_URL
+		sudo dpkg -i $DOWNLOAD_DIR/$NETSELECT_APT_DEB
+	fi
+}
+
+ubuntu_mirror_init()
+{
+	netselect_chkinstall
+	DISTRO_MIRROR=`sudo netselect -s 1 $(wget -qO - mirrors.ubuntu.com/mirrors.txt) | cut -d ' ' -f 5`
+}
+
+debian_mirror_init()
+{
+	netselect_chkinstall
+	netselect_apt_chkinstall
+	DISTRO_MIRROR=`sudo netselect-apt -t 20 -a $DISTRO_ARCH 2>&1 |grep -A 1 "fastest valid for HTTP" | tail -1 | cut -d ' ' -f 9`
+}
+
+mirror_init()
+{
+	if [ -e $MIRROR_FILE ];then
+		DISTRO_MIRROR=`cat $MIRROR_FILE`
+	else
+		echo "looking for the fastest mirror for $DISTRO_OS"
+		if [ $DISTRO_OS == debian ];then
+			debian_mirror_init
+		elif [ $DISTRO_OS == ubuntu ];then
+			ubuntu_mirror_init
+		fi
+		echo "$DISTRO_MIRROR" > $MIRROR_FILE
+	fi
+}
+
+arch_init()
+{
+	if [ -z $DISTRO_ARCH ];then
+		if [ -e $ARCH_FILE ];then
+			DISTRO_ARCH=`cat $ARCH_FILE`
+			return
+		else
+			DISTRO_ARCH=arm64
+		fi
+	fi
+	if [ $DISTRO_ARCH == arm ] || [ $DISTRO_ARCH == arm64 ];then
+		echo "$DISTRO_ARCH" > $ARCH_FILE
+		QEMU_ARCH=$DISTRO_ARCH
+		if [ $DISTRO_ARCH == arm64 ];then
+			QEMU_ARCH=aarch64
+		fi
+	else
+		echo "$DISTRO_ARCH is not a valid arch. we only support arm and arm64"
+	fi
+}
+
+dir_init()
+{
+	if [ ! -d $OUTPUT_DIR ];then
+		mkdir $OUTPUT_DIR
+	fi
+
+	if [ ! -d $BUILD_DIR ];then
+		mkdir $BUILD_DIR
+	fi
+
+	if [ ! -d $TARGET_DIR ];then
+		mkdir $TARGET_DIR
+	fi
+
+	if [ ! -d $MOUNT_DIR ];then
+		mkdir $MOUNT_DIR
+	fi
+}
+
+main() 
+{
+	dir_init
+	arch_init
+	mirror_init
+	defconfig_init
+	config_init
+	sourcelist_init
+	if [ -x $PACKAGE_DIR/$BUILD_PACKAGE/make.sh ];then
+		build_package $BUILD_PACKAGE
+		exit 0
+	else
+		build_minibase
+		build_packages
+		target_clean
+		pack_ext4
+		pack_squashfs
+	fi
+}
+
+main "$@"
