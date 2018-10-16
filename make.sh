@@ -4,6 +4,7 @@ DISTRO_DIR=$(dirname $(readlink -f "$0"))
 OUTPUT_DIR=$DISTRO_DIR/output
 BUILD_DIR=$OUTPUT_DIR/build
 TARGET_DIR=$OUTPUT_DIR/target
+IMAGE_DIR=$OUTPUT_DIR/images
 CONFIGS_DIR=$DISTRO_DIR/configs
 PACKAGE_DIR=$DISTRO_DIR/package
 DOWNLOAD_DIR=$DISTRO_DIR/download
@@ -12,8 +13,8 @@ MIRROR_FILE=$OUTPUT_DIR/.mirror
 ARCH_FILE=$OUTPUT_DIR/.arch
 DEFCONFIG_FILE=$OUTPUT_DIR/.defconfig
 DISTRO_CONFIG=$OUTPUT_DIR/.config
-ROOTFS_IMG_EXT4=$DISTRO_DIR/rootfs.img.ext4
-ROOTFS_IMG_SQUASHFS=$DISTRO_DIR/rootfs.img.squashfs
+EXT4_DEBUG_ROOTFS_IMG=$IMAGE_DIR/ext4.debug.rootfs.img
+SQUASHFS_DEBUG_ROOTFS_IMG=$IMAGE_DIR/squashfs.debug.rootfs.img
 DISTRO_DEFCONFIG=$1
 BUILD_PACKAGE=$1
 DISTRO_ARCH=$2
@@ -58,23 +59,27 @@ clean()
 
 pack_squashfs()
 {
-	mksquashfs $TARGET_DIR $ROOTFS_IMG_SQUASHFS -noappend -comp gzip
+	SRC=$1
+	DST=$2
+	mksquashfs $SRC $DST -noappend -comp gzip
 }
 
 pack_ext4()
 {
+	SRC=$1
+	DST=$2
 	if [ -x $DISTRO_DIR/../device/rockchip/common/mke2img.sh ];then
-		sudo $DISTRO_DIR/../device/rockchip/common/mke2img.sh $TARGET_DIR $ROOTFS_IMG_EXT4
+		sudo $DISTRO_DIR/../device/rockchip/common/mke2img.sh $SRC $DST
 	else
-		SIZE=`du -sk --apparent-size $TARGET_DIR | cut --fields=1`
-		inode_counti=`find $TARGET_DIR | wc -l`
+		SIZE=`du -sk --apparent-size $SRC | cut --fields=1`
+		inode_counti=`find $SRC | wc -l`
 		inode_counti=$[inode_counti+512]
 		EXTRA_SIZE=$[inode_counti*4]
 		SIZE=$[SIZE+EXTRA_SIZE]
-		genext2fs -b $SIZE -N $inode_counti -d $TARGET_DIR $ROOTFS_IMG_EXT4
-		tune2fs -C 1 $ROOTFS_IMG_EXT4
-		resize2fs -M $ROOTFS_IMG_EXT4
-		e2fsck -fy $ROOTFS_IMG_EXT4
+		genext2fs -b $SIZE -N $inode_counti -d $SRC $DST
+		tune2fs -C 1 $DST
+		resize2fs -M $DST
+		e2fsck -fy $DST
 	fi
 }
 
@@ -296,6 +301,10 @@ dir_init()
 		mkdir $TARGET_DIR
 	fi
 
+	if [ ! -d $IMAGE_DIR ];then
+		mkdir $IMAGE_DIR
+	fi
+
 	if [ ! -d $MOUNT_DIR ];then
 		mkdir $MOUNT_DIR
 	fi
@@ -315,9 +324,8 @@ main()
 		build_minibase
 		sourcelist_init
 		build_packages
-		target_clean
-		pack_ext4
-		pack_squashfs
+		pack_ext4 $TARGET_DIR $EXT4_DEBUG_ROOTFS_IMG
+		pack_squashfs $TARGET_DIR $SQUASHFS_DEBUG_ROOTFS_IMG
 	fi
 }
 
