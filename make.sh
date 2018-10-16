@@ -1,6 +1,7 @@
 #!/bin/bash
 
-DISTRO_DIR=$(dirname $(readlink -f "$0"))
+DISTRO_DIR=$(dirname $(realpath "$0"))
+TOP_DIR=$DISTRO_DIR/..
 OUTPUT_DIR=$DISTRO_DIR/output
 BUILD_DIR=$OUTPUT_DIR/build
 TARGET_DIR=$OUTPUT_DIR/target
@@ -8,7 +9,7 @@ IMAGE_DIR=$OUTPUT_DIR/images
 CONFIGS_DIR=$DISTRO_DIR/configs
 PACKAGE_DIR=$DISTRO_DIR/package
 DOWNLOAD_DIR=$DISTRO_DIR/download
-MOUNT_DIR=$TARGET_DIR/distro
+MOUNT_DIR=$TARGET_DIR/sdk
 MIRROR_FILE=$OUTPUT_DIR/.mirror
 ARCH_FILE=$OUTPUT_DIR/.arch
 DEFCONFIG_FILE=$OUTPUT_DIR/.defconfig
@@ -99,9 +100,9 @@ build_package()
 	echo "build package: $1"
 	package=$1
 	if [ -x $PACKAGE_DIR/$package/make.sh ];then
-		sudo mount -o ro,bind $DISTRO_DIR $MOUNT_DIR
+		sudo mount -o ro,bind $TOP_DIR $MOUNT_DIR
 		echo "execute $PACKAGE_DIR/$package/make.sh"
-		sudo chroot $TARGET_DIR bash /distro/package/$package/make.sh
+		sudo chroot $TARGET_DIR bash /sdk/distro/package/$package/make.sh
 		if [ $? -ne 0 ]; then
 			echo "build package $package failed"
 			sudo umount $MOUNT_DIR
@@ -315,12 +316,12 @@ main()
 	dir_init
 	arch_init
 	mirror_init
-	defconfig_init
-	config_init
 	if [ -x $PACKAGE_DIR/$BUILD_PACKAGE/make.sh ];then
 		build_package $BUILD_PACKAGE
 		exit 0
 	else
+		defconfig_init
+		config_init
 		build_minibase
 		sourcelist_init
 		build_packages
