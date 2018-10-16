@@ -12,7 +12,8 @@ MIRROR_FILE=$OUTPUT_DIR/.mirror
 ARCH_FILE=$OUTPUT_DIR/.arch
 DEFCONFIG_FILE=$OUTPUT_DIR/.defconfig
 DISTRO_CONFIG=$OUTPUT_DIR/.config
-ROOTFS_IMG=$DISTRO_DIR/rootfs.img
+ROOTFS_IMG_EXT4=$DISTRO_DIR/rootfs.img.ext4
+ROOTFS_IMG_SQUASHFS=$DISTRO_DIR/rootfs.img.squashfs
 DISTRO_DEFCONFIG=$1
 BUILD_PACKAGE=$1
 DISTRO_ARCH=$2
@@ -57,23 +58,23 @@ clean()
 
 pack_squashfs()
 {
-	mksquashfs $TARGET_DIR $ROOTFS_IMG -noappend -comp gzip
+	mksquashfs $TARGET_DIR $ROOTFS_IMG_SQUASHFS -noappend -comp gzip
 }
 
 pack_ext4()
 {
 	if [ -x $DISTRO_DIR/../device/rockchip/common/mke2img.sh ];then
-		sudo $DISTRO_DIR/../device/rockchip/common/mke2img.sh $TARGET_DIR $ROOTFS_IMG
+		sudo $DISTRO_DIR/../device/rockchip/common/mke2img.sh $TARGET_DIR $ROOTFS_IMG_EXT4
 	else
 		SIZE=`du -sk --apparent-size $TARGET_DIR | cut --fields=1`
 		inode_counti=`find $TARGET_DIR | wc -l`
 		inode_counti=$[inode_counti+512]
 		EXTRA_SIZE=$[inode_counti*4]
 		SIZE=$[SIZE+EXTRA_SIZE]
-		genext2fs -b $SIZE -N $inode_counti -d $TARGET_DIR $ROOTFS_IMG
-		tune2fs -C 1 $ROOTFS_IMG
-		resize2fs -M $ROOTFS_IMG
-		e2fsck -fy $ROOTFS_IMG
+		genext2fs -b $SIZE -N $inode_counti -d $TARGET_DIR $ROOTFS_IMG_EXT4
+		tune2fs -C 1 $ROOTFS_IMG_EXT4
+		resize2fs -M $ROOTFS_IMG_EXT4
+		e2fsck -fy $ROOTFS_IMG_EXT4
 	fi
 }
 
