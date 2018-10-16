@@ -235,7 +235,8 @@ debian_mirror_init()
 {
 	netselect_chkinstall
 	netselect_apt_chkinstall
-	DISTRO_MIRROR=`sudo netselect-apt -t 20 -a $DISTRO_ARCH 2>&1 |grep -A 1 "fastest valid for HTTP" | tail -1 | cut -d ' ' -f 9`
+	DISTRO_MIRROR=`sudo netselect-apt -o $OUTPUT_DIR/.sources.list -t 20 -a $DISTRO_ARCH 2>&1 |grep -A 1 "fastest valid for HTTP" | tail -1 | cut -d ' ' -f 9`
+	sudo rm $OUTPUT_DIR/.sources.list
 }
 
 mirror_init()
@@ -249,7 +250,12 @@ mirror_init()
 		elif [ $DISTRO_OS == ubuntu ];then
 			ubuntu_mirror_init
 		fi
-		echo "$DISTRO_MIRROR" > $MIRROR_FILE
+
+		if [ $? -eq 0 ]; then
+			echo "$DISTRO_MIRROR" > $MIRROR_FILE
+		else
+			exit 1
+		fi
 	fi
 }
 
