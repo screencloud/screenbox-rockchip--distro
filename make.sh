@@ -63,7 +63,7 @@ pack_squashfs()
 pack_ext4()
 {
 	if [ -x $DISTRO_DIR/../device/rockchip/common/mke2img.sh ];then
-		sudo $DISTRO_DIR/../device/rockchip/common/mke2img.sh $ROOTFS_IMG $TARGET_DIR
+		sudo $DISTRO_DIR/../device/rockchip/common/mke2img.sh $TARGET_DIR $ROOTFS_IMG
 	else
 		SIZE=`du -sk --apparent-size $TARGET_DIR | cut --fields=1`
 		inode_counti=`find $TARGET_DIR | wc -l`
@@ -122,6 +122,7 @@ make_sourcelist()
 	chmod 644 $BUILD_DIR/sourcelist/sources.list
 	sudo chown root:root $BUILD_DIR/sourcelist/sources.list
 }
+
 sourcelist_init()
 {
 	if [ ! -d $BUILD_DIR/sourcelist ];then
@@ -306,12 +307,12 @@ main()
 	mirror_init
 	defconfig_init
 	config_init
-	sourcelist_init
 	if [ -x $PACKAGE_DIR/$BUILD_PACKAGE/make.sh ];then
 		build_package $BUILD_PACKAGE
 		exit 0
 	else
 		build_minibase
+		sourcelist_init
 		build_packages
 		target_clean
 		pack_ext4
