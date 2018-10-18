@@ -6,6 +6,7 @@ OUTPUT_DIR=$DISTRO_DIR/output
 BUILD_DIR=$OUTPUT_DIR/build
 TARGET_DIR=$OUTPUT_DIR/target
 IMAGE_DIR=$OUTPUT_DIR/images
+FIRMWARE_DIR=$OUTPUT_DIR/firmware
 CONFIGS_DIR=$DISTRO_DIR/configs
 PACKAGE_DIR=$DISTRO_DIR/package
 DOWNLOAD_DIR=$DISTRO_DIR/download
@@ -14,8 +15,10 @@ MIRROR_FILE=$OUTPUT_DIR/.mirror
 ARCH_FILE=$OUTPUT_DIR/.arch
 DEFCONFIG_FILE=$OUTPUT_DIR/.defconfig
 DISTRO_CONFIG=$OUTPUT_DIR/.config
-EXT4_DEBUG_ROOTFS_IMG=$IMAGE_DIR/ext4.debug.rootfs.img
-SQUASHFS_DEBUG_ROOTFS_IMG=$IMAGE_DIR/squashfs.debug.rootfs.img
+ROOTFS_DEBUG_EXT4=$IMAGE_DIR/rootfs.debug.ext4
+ROOTFS_DEBUG_SQUASHFS=$IMAGE_DIR/rootfs.debug.squashfs
+ROOTFS_EXT4=$IMAGE_DIR/rootfs.ext4
+ROOTFS_SQUASHFS=$IMAGE_DIR/rootfs.squashfs
 DISTRO_DEFCONFIG=$1
 BUILD_PACKAGE=$1
 DISTRO_ARCH=$2
@@ -86,13 +89,29 @@ pack_ext4()
 
 target_clean()
 {
-	sudo chroot $TARGET_DIR apt-get clean
-	sudo rm -rf $TARGET_DIR/usr/share/locale/*
-	sudo rm -rf $TARGET_DIR/usr/share/man/*
-	sudo rm -rf $TARGET_DIR/usr/share/doc/*
-	sudo rm -rf $TARGET_DIR/var/log/*
-	sudo rm -rf $TARGET_DIR/var/lib/apt/lists/*
-	sudo rm -rf $TARGET_DIR/var/cache/*
+	system=$1
+	sudo chroot $system apt-get clean
+	sudo chroot $system apt-get autoclean
+	sudo chroot $system apt-get autoremove
+	sudo rm -rf $system/usr/share/locale/*
+	sudo rm -rf $system/usr/share/man/*
+	sudo rm -rf $system/usr/share/doc/*
+	sudo rm -rf $system/var/log/*
+	sudo rm -rf $system/var/lib/apt/lists/*
+	sudo rm -rf $system/var/cache/*
+	sudo rm -rf $system/sdk
+}
+
+build_firmware()
+{
+	sudo rm -rf $FIRMWARE_DIR
+	sudo cp -ar $TARGET_DIR $FIRMWARE_DIR
+	target_clean $FIRMWARE_DIR
+	pack_ext4 $FIRMWARE_DIR $ROOTFS_DEBUG_EXT4
+	pack_ext4 $FIRMWARE_DIR $ROOTFS_EXT4
+	pack_squashfs $FIRMWARE_DIR $ROOTFS_DEBUG_SQUASHFS
+	pack_squashfs $FIRMWARE_DIR $ROOTFS_SQUASHFS
+
 }
 
 build_package()
@@ -311,22 +330,36 @@ dir_init()
 	fi
 }
 
-main() 
+build_single_package()
+{
+	arch_init
+	build_package $1
+}
+
+build_all()
 {
 	dir_init
 	arch_init
 	mirror_init
-	if [ -x $PACKAGE_DIR/$BUILD_PACKAGE/make.sh ];then
-		build_package $BUILD_PACKAGE
+	defconfig_init
+	config_init
+	build_minibase
+	sourcelist_init
+	build_packages
+	build_firmware
+}
+
+main()
+{
+	if [ $1 == firmware ];then
+		build_firmware
+		exit 0
+	elif [ -x $PACKAGE_DIR/$1/make.sh ];then
+		build_single_package $1
 		exit 0
 	else
-		defconfig_init
-		config_init
-		build_minibase
-		sourcelist_init
-		build_packages
-		pack_ext4 $TARGET_DIR $EXT4_DEBUG_ROOTFS_IMG
-		pack_squashfs $TARGET_DIR $SQUASHFS_DEBUG_ROOTFS_IMG
+		build_all
+		exit 0
 	fi
 }
 
