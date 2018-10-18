@@ -24,10 +24,6 @@ if [ ! -L data ];then
 	ln -fs userdata data
 fi
 
-if [ ! -L udisk ];then
-	ln -fs media/usb udisk
-fi
-
 if [ ! -L sdcard ];then
 	ln -fs mnt/sdcard sdcard
 fi
