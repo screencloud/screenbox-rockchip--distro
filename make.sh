@@ -119,7 +119,7 @@ build_package()
 	echo "build package: $1"
 	package=$1
 	if [ -x $PACKAGE_DIR/$package/make.sh ];then
-		sudo mount -o ro,bind $TOP_DIR $MOUNT_DIR
+		sudo mount -o rw,bind $TOP_DIR $MOUNT_DIR
 		echo "execute $PACKAGE_DIR/$package/make.sh"
 		sudo chroot $TARGET_DIR bash /sdk/distro/package/$package/make.sh
 		if [ $? -ne 0 ]; then
@@ -351,7 +351,7 @@ build_all()
 
 main()
 {
-	if [ $1 == firmware ];then
+	if [ $1 = firmware ];then
 		build_firmware
 		exit 0
 	elif [ -x $PACKAGE_DIR/$1/make.sh ];then
