@@ -210,6 +210,7 @@ build_minibase()
 config_init()
 {
 	if [ $DISTRO_DEFCONFIG ] && [ -e $CONFIGS_DIR/$DISTRO_DEFCONFIG ];then
+		rm $DISTRO_CONFIG
 		for line in $(cat $CONFIGS_DIR/$DISTRO_DEFCONFIG)
 		do
 			if [ $line ] && [ -e $CONFIGS_DIR/$line ];then
