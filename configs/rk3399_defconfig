@@ -1,4 +1,4 @@
-build.config
 base.config
 audio.config
+wifi.config
 debug.config
