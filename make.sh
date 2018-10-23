@@ -133,6 +133,20 @@ build_package()
 
 build_packages()
 {
+	if [ -e $TOP_DIR/build.sh ] && [ ! -e $OUTPUT_DIR/.kernelmodules.done ];then
+		$TOP_DIR/build.sh modules
+		touch $OUTPUT_DIR/.kernelmodules.done
+	fi
+
+	if [ ! -e $OUTPUT_DIR/.buildtool.done ] && [ $DISTRO_DIR/configs/build.config ];then
+		for pkg in $(cat $DISTRO_DIR/configs/build.config)
+		do
+			build_package $pkg
+			touch $OUTPUT_DIR/.buildtool.done
+		done
+	fi
+
+
 	if [ -e $DISTRO_CONFIG ];then
 		for line in $(cat $DISTRO_CONFIG)
 		do
