@@ -351,7 +351,7 @@ build_all()
 
 main()
 {
-	if [ $1 = firmware ];then
+	if [ x$1 == xfirmware ];then
 		build_firmware
 		exit 0
 	elif [ -x $PACKAGE_DIR/$1/make.sh ];then
