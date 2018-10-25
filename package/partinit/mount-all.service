@@ -1,0 +1,10 @@
+[Unit]
+Description=resize and check all partition
+Requires=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/S21mountall.sh start
+
+[Install]
+WantedBy=multi-user.target
