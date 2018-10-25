@@ -1,0 +1,11 @@
+[Unit]
+Description=init adbd, ums, mtp
+Requires=local-fs.target mount-all.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/S50usbdevice start
+ExecStop=/usr/bin/S50usbdevice stop
+
+[Install]
+WantedBy=multi-user.target
