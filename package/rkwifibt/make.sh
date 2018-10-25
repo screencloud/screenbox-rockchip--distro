@@ -21,12 +21,10 @@ if [ $? -ne 0 ]; then
 fi
 install -m 0644 -D /sdk/external/rkwifibt/firmware/broadcom/all/WIFI_FIRMWARE/* /system/etc/firmware/
 install -m 0644 -D /sdk/external/rkwifibt/firmware/broadcom/all/BT_FIRMWARE/* /system/etc/firmware/
-install -m 0755 -D /sdk/external/rkwifibt/S66load_wifi_modules /etc/init.d/
+install -m 0755 -D /sdk/external/rkwifibt/S66load_wifi_modules /usr/bin/
+sed -i 's/BT_TTY_DEV/\/dev\/ttyS0/g' /usr/bin/S66load_wifi_modules
 install -m 0644 -D /sdk/distro/package/rkwifibt/wpa_supplicant.conf /etc/wpa_supplicant.conf
 install -m 0644 -D /sdk/distro/package/rkwifibt/dnsmasq.conf /etc/dnsmasq.conf
 install -m 0755 -D /sdk/distro/package/rkwifibt/wifi_start.sh /usr/bin/
-sed -i 's/BT_TTY_DEV/\/dev\/ttyS0/g' /etc/init.d/S66load_wifi_modules
-
-if [ $? -ne 0 ]; then
-	exit 1
-fi
+install -m 0644 -D /sdk/distro/package/rkwifibt/wifi-init.service /lib/systemd/system/
+systemctl enable wifi-init.service
