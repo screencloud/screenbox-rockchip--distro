@@ -1,9 +1,9 @@
 [Unit]
-Description=init adbd, ums, mtp
-Requires=local-fs.target mount-all.service
+Description=usb devices init service
 
 [Service]
-Type=oneshot
+Type=forking
+User=root
 ExecStart=/usr/bin/S50usbdevice start
 ExecStop=/usr/bin/S50usbdevice stop
 
