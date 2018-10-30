@@ -6,3 +6,4 @@ if [ ! -e $CONFIG_FILE ];then
 fi
 
 test ! `grep usb_ums_en $CONFIG_FILE` && echo usb_ums_en >> $CONFIG_FILE
+exit 0
