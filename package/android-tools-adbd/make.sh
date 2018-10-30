@@ -1,13 +1,14 @@
 #!/bin/bash
+
 pkg_name=android-tools-adbd
-installed=`dpkg -l | grep $pkg_name`
-if [ -z "$installed" ];then
-	apt-get install -y $pkg_name
-	if [ $? -ne 0 ]; then
-		exit 1
-	fi
-else
+installed=`dpkg -s $pkg_name  | grep Status`
+if [ "$installed" == "Status: install ok installed" ];then
 	echo "$pkg_name already installed"
+else
+        apt-get install -y $pkg_name
+        if [ $? -ne 0 ]; then
+                exit 1
+        fi
 fi
 
 CONFIG_FILE=/usr/bin/.usb_config
