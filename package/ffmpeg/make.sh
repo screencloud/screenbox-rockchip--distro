@@ -101,7 +101,7 @@ cd /sdk/external/ffmpeg
 
 
 make
-
+make install
 
 
 cd -
