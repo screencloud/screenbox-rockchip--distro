@@ -1,12 +1,11 @@
 #!/bin/bash
 
-pkg_name=make
-installed=`dpkg -s $pkg_name  | grep Status`
-if [ "$installed" == "Status: install ok installed" ];then
-	echo "$pkg_name already installed"
+PACKAGE=make
+METHOD=$1
+if [ x$METHOD = xcross ];then
+	exit 0
 else
-        apt-get install -y $pkg_name
-        if [ $? -ne 0 ]; then
-                exit 1
-        fi
+	set -e
+	/sdk/distro/scripts/install.sh $PACKAGE
 fi
+
