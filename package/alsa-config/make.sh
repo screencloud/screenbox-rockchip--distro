@@ -1,6 +1,11 @@
 #!/bin/bash
 
-install -D -m 0644 -D /sdk/external/alsa-config/cards/* /usr/share/alsa/cards/
-if [ $? -ne 0 ]; then
-	exit 1
+set -e
+METHOD=$1
+CURRENT_DIR=$(dirname $(realpath "$0"))
+if [ x$METHOD = xcross ];then
+	
+	sudo install -D -m 0644 -D $TOP_DIR/external/alsa-config/cards/* $TARGET_DIR/usr/share/alsa/cards/
+else
+	exit 0
 fi
