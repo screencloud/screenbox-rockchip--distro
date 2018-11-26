@@ -2,15 +2,10 @@
 
 DISTRO_DIR=$(dirname $(realpath "$0"))
 TOP_DIR=$DISTRO_DIR/..
-OUTPUT_DIR=$DISTRO_DIR/output
-BUILD_DIR=$OUTPUT_DIR/build
-TARGET_DIR=$OUTPUT_DIR/target
-IMAGE_DIR=$OUTPUT_DIR/images
-ROOTFS_DIR=$OUTPUT_DIR/rootfs
-CONFIGS_DIR=$DISTRO_DIR/configs
-PACKAGE_DIR=$DISTRO_DIR/package
-DOWNLOAD_DIR=$DISTRO_DIR/download
-MOUNT_DIR=$TARGET_DIR/sdk
+
+source $TOP_DIR/device/rockchip/.BoardConfig.mk
+source $DISTRO_DIR/envsetup.sh
+
 MIRROR_FILE=$OUTPUT_DIR/.mirror
 ARCH_FILE=$OUTPUT_DIR/.arch
 DEFCONFIG_FILE=$OUTPUT_DIR/.defconfig
@@ -142,8 +137,11 @@ build_rootfs()
 	sudo rm -rf $ROOTFS_DIR
 	sudo cp -ar $TARGET_DIR $ROOTFS_DIR
 	target_clean $ROOTFS_DIR
-	pack_ext4 $ROOTFS_DIR $ROOTFS_EXT4
-	pack_squashfs $ROOTFS_DIR $ROOTFS_SQUASHFS
+	if [ $RK_ROOTFS_TYPE = ext4 ];then
+		pack_ext4 $ROOTFS_DIR $ROOTFS_EXT4
+	elif [ $RK_ROOTFS_TYPE = squashfs ];then
+		pack_squashfs $ROOTFS_DIR $ROOTFS_SQUASHFS
+	fi
 }
 
 build_package()
@@ -151,8 +149,13 @@ build_package()
 	echo "build package: $1"
 	package=$1
 	if [ -x $PACKAGE_DIR/$package/make.sh ];then
-		sudo mount -o rw,bind $TOP_DIR $MOUNT_DIR
 		echo "execute $PACKAGE_DIR/$package/make.sh"
+		$PACKAGE_DIR/$package/make.sh cross
+		if [ $? -ne 0 ]; then
+			echo "cross build package $package failed"
+			exit 1
+		fi
+		sudo mount -o rw,bind $TOP_DIR $MOUNT_DIR
 		sudo chroot $TARGET_DIR bash /sdk/distro/package/$package/make.sh
 		if [ $? -ne 0 ]; then
 			echo "build package $package failed"
@@ -160,16 +163,12 @@ build_package()
 			exit 1
 		fi
 		sudo umount $MOUNT_DIR
+		sudo scripts/fix_link.sh $TARGET_DIR/usr/lib/$TOOLCHAIN
 	fi
 }
 
 build_packages()
 {
-	if [ -e $TOP_DIR/build.sh ] && [ ! -e $OUTPUT_DIR/.kernelmodules.done ];then
-		$TOP_DIR/build.sh modules
-		touch $OUTPUT_DIR/.kernelmodules.done
-	fi
-
 	if [ ! -e $OUTPUT_DIR/.buildtool.done ] && [ $DISTRO_DIR/configs/build.config ];then
 		for pkg in $(cat $DISTRO_DIR/configs/build.config)
 		do
