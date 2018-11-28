@@ -6,11 +6,11 @@ if [ x$METHOD = xcross ];then
 	CONFIG_FILE=$TARGET_DIR/usr/bin/.usb_config
 
 	if [ ! -e $CONFIG_FILE ];then
-		sudo touch $CONFIG_FILE
+		touch $CONFIG_FILE
 	fi
 
 	if [ ! `grep usb_ums_en $CONFIG_FILE` ];then
-		sudo echo usb_ums_en >> $CONFIG_FILE
+		echo usb_ums_en >> $CONFIG_FILE
 	fi
 
 fi
