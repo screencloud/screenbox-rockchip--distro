@@ -150,7 +150,7 @@ build_package()
 	package=$1
 	if [ -x $PACKAGE_DIR/$package/make.sh ];then
 		echo "execute $PACKAGE_DIR/$package/make.sh"
-		$PACKAGE_DIR/$package/make.sh cross
+		sudo  -E $PACKAGE_DIR/$package/make.sh cross
 		if [ $? -ne 0 ]; then
 			echo "cross build package $package failed"
 			exit 1
