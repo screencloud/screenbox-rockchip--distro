@@ -1,24 +1,20 @@
 #!/bin/bash
-#apt-get install -y glmark2-es2-wayland
 
-if [ ! -d /sdk/distro/output/build/glmark2 ];then
-	git clone https://github.com/glmark2/glmark2.git  /sdk/distro/output/build/glmark2
-	if [ $? -ne 0 ]; then
-		exit 1
+set -e
+METHOD=$1
+export CURRENT_DIR=$(dirname $(realpath "$0"))
+if [ x$METHOD = xcross ];then
+	if [ ! -d $BUILD_DIR/glmark2 ];then
+		git clone https://github.com/glmark2/glmark2.git  $BUILD_DIR/glmark2
 	fi
-fi
 
-cd /sdk/distro/output/build/glmark2
-./waf configure --with-flavors=drm-glesv2,wayland-glesv2 --prefix=/usr
-if [ $? -ne 0 ]; then
-	exit 1
+	cd $BUILD_DIR/glmark2
+	echo "cflag:$CFLAGS, cxxflag:$CXXFLAGS "
+	./waf configure --with-flavors=drm-glesv2,wayland-glesv2 --prefix=/usr
+	./waf
+	./waf install
+	cd -
+else
+	echo " "
+	#apt-get install -y glmark2-es2-wayland
 fi
-./waf
-if [ $? -ne 0 ]; then
-	exit 1
-fi
-./waf install
-if [ $? -ne 0 ]; then
-	exit 1
-fi
-cd -
