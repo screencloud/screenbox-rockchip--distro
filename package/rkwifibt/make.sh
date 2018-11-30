@@ -5,6 +5,7 @@ METHOD=$1
 CURRENT_DIR=$(dirname $(realpath "$0"))
 if [ x$METHOD = xcross ];then
 	if [ -e $TOP_DIR/build.sh ] && [ ! -e $OUTPUT_DIR/.kernelmodules.done ];then
+		export LDFLAGS="--sysroot=$SYSROOT"
 		$TOP_DIR/build.sh modules
 		touch $OUTPUT_DIR/.kernelmodules.done
 	fi
