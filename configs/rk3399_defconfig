@@ -4,3 +4,4 @@ wifi.config
 debug.config
 graphics.config
 video.config
+benchmark.config 
