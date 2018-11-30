@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 export DISTRO_DIR=$(dirname $(realpath "$0"))
 export TOP_DIR=$(realpath $DISTRO_DIR/..)
@@ -36,5 +36,6 @@ export PKG_CONFIG_LIBDIR="$TARGET_DIR/usr/lib/$TOOLCHAIN/pkgconfig:$TARGET_DIR/u
 export PKG_CONFIG_SYSROOT_DIR="$TARGET_DIR"
 export PKG_CONFIG_ALLOW_SYSTEM_LIBS=1
 export DESTDIR="$TARGET_DIR"
-export CFLAGS="-I$TARGET_DIR/usr/include -I$TARGET_DIR/usr/include/$TOOLCHAIN"
-export LDFLAGS="--sysroot=$SYSROOT"
+export CFLAGS="-I$TARGET_DIR/usr/include -I$TARGET_DIR/usr/include/$TOOLCHAIN --sysroot=$TARGET_DIR"
+export CXXFLAGS="-I$TARGET_DIR/usr/include -I$TARGET_DIR/usr/include/$TOOLCHAIN --sysroot=$TARGET_DIR"
+export LDFLAGS="--sysroot=$SYSROOT -Wl,-rpath-link,$SYSROOT/lib:$SYSROOT/usr/lib:$TARGET_DIR/lib/$TOOLCHAIN:$TARGET_DIR/usr/lib:$TARGET_DIR/usr/lib/$TOOLCHAIN -L$TARGET_DIR/usr/lib"
