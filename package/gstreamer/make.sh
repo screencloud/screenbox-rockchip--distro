@@ -12,6 +12,5 @@ else
 	/sdk/distro/scripts/install.sh gstreamer1.0-plugins-ugly
 	/sdk/distro/scripts/install.sh gstreamer1.0-tools
 	/sdk/distro/scripts/install.sh libgstreamer-plugins-base1.0-dev
-	/sdk/distro/scripts/install.sh libgstreamer-plugins-bad1.0-dev
 fi
 
