@@ -284,97 +284,19 @@ defconfig_init()
 	fi
 }
 
-netselect_chkinstall()
-{
-	if [ -z `which netselect` ];then
-		wget -P $DOWNLOAD_DIR $NETSELECT_URL
-		sudo dpkg -i $DOWNLOAD_DIR/$NETSELECT_DEB
-	fi
-}
-
-netselect_apt_chkinstall()
-{
-	if [ -z `which netselect-apt` ];then
-		wget -P $DOWNLOAD_DIR $NETSELECT_APT_URL
-		sudo dpkg -i $DOWNLOAD_DIR/$NETSELECT_APT_DEB
-	fi
-}
-
-ubuntu_mirror_init()
-{
-	netselect_chkinstall
-	DISTRO_MIRROR=`sudo netselect -s 1 $(wget -qO - mirrors.ubuntu.com/mirrors.txt) | cut -d ' ' -f 5`
-}
-
-debian_mirror_init()
-{
-	netselect_chkinstall
-	netselect_apt_chkinstall
-	DISTRO_MIRROR=`sudo netselect-apt -o $OUTPUT_DIR/.sources.list -t 20 -a $DISTRO_ARCH 2>&1 |grep -A 1 "fastest valid for HTTP" | tail -1 | cut -d ' ' -f 9`
-	sudo rm $OUTPUT_DIR/.sources.list
-}
-
-mirror_init()
-{
-	if [ -e $MIRROR_FILE ];then
-		DISTRO_MIRROR=`cat $MIRROR_FILE`
-	else
-		echo "looking for the fastest mirror for $DISTRO_OS"
-		if [ $DISTRO_OS == debian ];then
-			debian_mirror_init
-		elif [ $DISTRO_OS == ubuntu ];then
-			ubuntu_mirror_init
-		fi
-
-		if [ $? -eq 0 ]; then
-			echo "$DISTRO_MIRROR" > $MIRROR_FILE
-		else
-			exit 1
-		fi
-	fi
-}
-
 arch_init()
 {
+	DISTRO_ARCH=$RK_ARCH
 	if [ -z $DISTRO_ARCH ];then
-		if [ -e $ARCH_FILE ];then
-			DISTRO_ARCH=`cat $ARCH_FILE`
-			return
-		else
-			DISTRO_ARCH=arm64
-		fi
+		DISTRO_ARCH=arm64
 	fi
 	if [ $DISTRO_ARCH == arm ] || [ $DISTRO_ARCH == arm64 ];then
-		echo "$DISTRO_ARCH" > $ARCH_FILE
 		QEMU_ARCH=$DISTRO_ARCH
 		if [ $DISTRO_ARCH == arm64 ];then
 			QEMU_ARCH=aarch64
 		fi
 	else
 		echo "$DISTRO_ARCH is not a valid arch. we only support arm and arm64"
-	fi
-}
-
-dir_init()
-{
-	if [ ! -d $OUTPUT_DIR ];then
-		mkdir $OUTPUT_DIR
-	fi
-
-	if [ ! -d $BUILD_DIR ];then
-		mkdir $BUILD_DIR
-	fi
-
-	if [ ! -d $TARGET_DIR ];then
-		mkdir $TARGET_DIR
-	fi
-
-	if [ ! -d $IMAGE_DIR ];then
-		mkdir $IMAGE_DIR
-	fi
-
-	if [ ! -d $MOUNT_DIR ];then
-		mkdir $MOUNT_DIR
 	fi
 }
 
@@ -386,9 +308,9 @@ build_single_package()
 
 build_all()
 {
-	dir_init
+	mkdir -p $OUTPUT_DIR $BUILD_DIR $TARGET_DIR $IMAGE_DIR $MOUNT_DIR
 	arch_init
-	mirror_init
+	DISTRO_MIRROR=`$DISTRO_DIR/scripts/get_mirror.sh $DISTRO_OS $DISTRO_ARCH`
 	defconfig_init
 	config_init
 	build_minibase
