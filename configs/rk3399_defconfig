@@ -1,7 +1,2 @@
-base.config
-audio.config
-wifi.config
-debug.config
-graphics.config
-video.config
-benchmark.config 
+rk3399.config
+rk3399.rk
