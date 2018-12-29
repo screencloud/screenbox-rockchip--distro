@@ -8,5 +8,6 @@ alsa-config
 libmad
 rkscript
 rkwifibt
+weston
 glmark2
 mpp

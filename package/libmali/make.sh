@@ -1,10 +1,5 @@
 #!/bin/bash
 
-METHOD=$1
-if [ x$METHOD != xcross ];then
-	exit 0
-fi
-
 rm_so()
 {
 	rm -f $TARGET_DIR/usr/lib/$TOOLCHAIN/libmali*
