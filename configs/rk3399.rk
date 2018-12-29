@@ -3,6 +3,7 @@ partinit
 usbdevice
 adbd
 ums
+resize-helper
 alsa-config
 libmad
 rkscript
