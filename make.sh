@@ -201,6 +201,7 @@ build_target_base()
 if [ ! -e $OUTPUT_DIR/.targetpkg.done ];then
 	echo "build target $OS $SUITE $ARCH package: $TARGET_PKG"
 	run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $TARGET_DIR -m $MIRROR -p "$PREBUILT_PKG" -s $SUITE
+	$SCRIPTS_DIR/fix_link.sh $TARGET_DIR/usr/lib/$TOOLCHAIN
 	#run $SCRIPTS_DIR/debootstrap_build.sh -a $ARCH -d $OUTPUT_DIR/debootstrap -m $MIRROR -p "$PACKAGES" -s $SUITE
 	touch $OUTPUT_DIR/.targetpkg.done
 else
@@ -213,6 +214,7 @@ build_sysroot()
 if [ ! -e $OUTPUT_DIR/.sysrootpkg.done ];then
         echo "build sysroot package for $OS $SUITE: $SYSROOT_PKG"
         run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $SYSROOT_DIR -m $MIRROR -p "$SYSROOT_PKG" -s $SUITE
+	$SCRIPTS_DIR/fix_link.sh $SYSROOT_DIR/usr/lib/$TOOLCHAIN
         touch $OUTPUT_DIR/.sysrootpkg.done
 else
         echo "$OS $ARCH $SUITE package already installed for sysroot, skip"
