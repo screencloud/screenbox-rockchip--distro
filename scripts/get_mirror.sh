@@ -10,7 +10,7 @@ NETSELECT_URL=http://ftp.cn.debian.org/debian/pool/main/n/netselect/$NETSELECT_D
 OS=$1
 ARCH=$2
 
-if [ $3 = default ];then
+if [ x$3 = xdefault ];then
 	if [ $OS = debian ];then
 		echo "$DEFAULT_DEBIAN_MIRROR"
 		exit 0
