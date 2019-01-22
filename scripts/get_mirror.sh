@@ -1,6 +1,10 @@
 #!/bin/bash
 
-DEFAULT_DEBIAN_MIRROR=http://ftp.cn.debian.org/debian
+DEFAULT_DEBIAN_MIRROR1=http://ftp.cn.debian.org/debian
+DEFAULT_DEBIAN_MIRROR2=http://mirror.xtom.com.hk/debian
+DEFAULT_DEBIAN_MIRROR3=http://mirrors.ustc.edu.cn/debian
+DEFAULT_DEBIAN_MIRROR4=http://cdn.debian.net/debian
+DEFAULT_DEBIAN_MIRROR=$DEFAULT_DEBIAN_MIRROR2
 DEFAULT_UBUNTU_MIRROR=http://mirrors.ustc.edu.cn/ubuntu
 NETSELECT_APT_DEB=netselect-apt_0.3.ds1-28_all.deb
 NETSELECT_APT_URL=http://ftp.cn.debian.org/debian/pool/main/n/netselect/$NETSELECT_APT_DEB
@@ -42,12 +46,26 @@ netselect_apt_chkinstall()
 
 main()
 {
-	if [ $OS = debian ];then
+	if [ x$OS = xdebian ];then
+		sudo touch /tmp/.test
+		if [ $? == 1 ];then
+			echo "$DEFAULT_DEBIAN_MIRROR"
+			exit 0
+		else
+			rm -f /tmp/.test
+		fi
 		netselect_chkinstall
 		netselect_apt_chkinstall
 		MIRROR=`sudo netselect-apt -o /tmp/.sources.list -t 20 -a $ARCH 2>&1 |grep -A 1 "fastest valid for HTTP" | tail -1 | cut -d ' ' -f 9`
 		sudo rm -f /tmp/.sources.list
-	elif [ $OS = ubuntu ];then
+	elif [ x$OS = xubuntu ];then
+		sudo touch /tmp/.test
+		if [ $? == 1 ];then
+			echo "$DEFAULT_UBUNTU_MIRROR"
+			exit 0
+		else
+			rm -f /tmp/.test
+		fi
 		netselect_chkinstall
 		MIRROR=`sudo netselect -s 1 $(wget -qO - mirrors.ubuntu.com/mirrors.txt) | cut -d ' ' -f 5`
 	else
