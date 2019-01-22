@@ -189,7 +189,7 @@ init()
 	#echo "PREBUILT_PKG: $PREBUILT_PKG, SYSROOT_PKG: $SYSROOT_PKG, RK_PKG: $RK_PKG"
         if [ ! -e $OUTPUT_DIR/.mirror ];then
 		echo "find the fastest mirror"
-		MIRROR=`$SCRIPTS_DIR/get_mirror.sh $OS $ARCH default`
+		MIRROR=`$SCRIPTS_DIR/get_mirror.sh $OS $ARCH`
 		echo $MIRROR > $OUTPUT_DIR/.mirror
 	else
 		MIRROR=`cat $OUTPUT_DIR/.mirror`
