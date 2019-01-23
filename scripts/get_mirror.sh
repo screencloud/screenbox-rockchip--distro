@@ -52,7 +52,7 @@ main()
 			echo "$DEFAULT_DEBIAN_MIRROR"
 			exit 0
 		else
-			rm -f /tmp/.test
+			sudo rm -f /tmp/.test
 		fi
 		netselect_chkinstall
 		netselect_apt_chkinstall
@@ -64,7 +64,7 @@ main()
 			echo "$DEFAULT_UBUNTU_MIRROR"
 			exit 0
 		else
-			rm -f /tmp/.test
+			sudo rm -f /tmp/.test
 		fi
 		netselect_chkinstall
 		MIRROR=`sudo netselect -s 1 $(wget -qO - mirrors.ubuntu.com/mirrors.txt) | cut -d ' ' -f 5`
