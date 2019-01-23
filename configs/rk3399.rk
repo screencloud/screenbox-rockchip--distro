@@ -11,3 +11,9 @@ rkwifibt
 weston
 glmark2
 mpp
+gstreamer
+gst-plugins-base
+gst-plugins-good
+gst-plugins-bad
+gst-plugins-ugly
+gstreamer-rockchip
