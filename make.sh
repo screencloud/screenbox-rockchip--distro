@@ -16,7 +16,7 @@ ROOTFS_EXT4=$IMAGE_DIR/rootfs.ext4
 ROOTFS_SQUASHFS=$IMAGE_DIR/rootfs.squashfs
 DEFCONFIG=$1
 BUILD_PACKAGE=$1
-SUITE=sid
+SUITE=buster
 
 if [ $SUITE==buster ] || [ $SUITE==stretch ] || [ $SUITE==sid ] || [ $SUITE==testing ];then
 	OS=debian
