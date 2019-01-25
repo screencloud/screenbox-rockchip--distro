@@ -22,4 +22,4 @@ sed -i 's/BT_TTY_DEV/\/dev\/ttyS0/g' $TARGET_DIR/etc/init.d/S66load_wifi_modules
 install -m 0644 -D $TOP_DIR/external/rkwifibt/wpa_supplicant.conf $TARGET_DIR/etc/wpa_supplicant.conf
 install -m 0644 -D $TOP_DIR/external/rkwifibt/dnsmasq.conf $TARGET_DIR/etc/dnsmasq.conf
 install -m 0755 -D $TOP_DIR/external/rkwifibt/wifi_start.sh $TARGET_DIR/usr/bin/
-
+install -m 0755 -D $PACKAGE_DIR/rkwifibt/S41dhcpcd $TARGET_DIR/etc/init.d/
