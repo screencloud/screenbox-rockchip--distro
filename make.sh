@@ -203,6 +203,7 @@ if [ ! -e $OUTPUT_DIR/.targetpkg.done ];then
 	run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $TARGET_DIR -m $MIRROR -p "$PREBUILT_PKG" -s $SUITE
 	$SCRIPTS_DIR/fix_link.sh $TARGET_DIR/usr/lib/$TOOLCHAIN
 	#run $SCRIPTS_DIR/debootstrap_build.sh -a $ARCH -d $OUTPUT_DIR/debootstrap -m $MIRROR -p "$PACKAGES" -s $SUITE
+	echo "deb [arch=$ARCH] $MIRROR $SUITE main" > $TARGET_DIR/etc/apt/sources.list.d/multistrap-debian.list
 	touch $OUTPUT_DIR/.targetpkg.done
 else
 	echo "$OS $ARCH $SUITE package already installed for target, skip"
