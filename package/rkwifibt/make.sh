@@ -23,3 +23,5 @@ install -m 0644 -D $TOP_DIR/external/rkwifibt/wpa_supplicant.conf $TARGET_DIR/et
 install -m 0644 -D $TOP_DIR/external/rkwifibt/dnsmasq.conf $TARGET_DIR/etc/dnsmasq.conf
 install -m 0755 -D $TOP_DIR/external/rkwifibt/wifi_start.sh $TARGET_DIR/usr/bin/
 install -m 0755 -D $PACKAGE_DIR/rkwifibt/S41dhcpcd $TARGET_DIR/etc/init.d/
+install -m 0755 -D $PACKAGE_DIR/rkwifibt/S49ntp $TARGET_DIR/etc/init.d/
+install -m 0755 -D $PACKAGE_DIR/rkwifibt/watch_ntpd.sh $TARGET_DIR/usr/bin/
