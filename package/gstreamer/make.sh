@@ -16,7 +16,6 @@ cd $BUILD_DIR/$PKG
 make
 make install
 $SCRIPTS_DIR/fixlibtool.sh $TARGET_DIR $TARGET_DIR
-#sed -i 's/[^ ]*libgstreamer-1.0.la//' $TARGET_DIR/usr/lib/$TOOLCHAIN/libgstbase-1.0.la
 cd -
 cd $TARGET_DIR/usr/bin
 ln -sf $TOOLCHAIN-gst-device-monitor-1.0 gst-device-monitor-1.0
