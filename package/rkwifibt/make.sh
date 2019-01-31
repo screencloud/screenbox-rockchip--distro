@@ -25,3 +25,8 @@ install -m 0755 -D $TOP_DIR/external/rkwifibt/wifi_start.sh $TARGET_DIR/usr/bin/
 install -m 0755 -D $PACKAGE_DIR/rkwifibt/S41dhcpcd $TARGET_DIR/etc/init.d/
 install -m 0755 -D $PACKAGE_DIR/rkwifibt/S49ntp $TARGET_DIR/etc/init.d/
 install -m 0755 -D $PACKAGE_DIR/rkwifibt/watch_ntpd.sh $TARGET_DIR/usr/bin/
+
+echo server 0.cn.pool.ntp.org >>  $TARGET_DIR/etc/ntp.conf
+echo server 1.cn.pool.ntp.org >>  $TARGET_DIR/etc/ntp.conf
+echo server 2.cn.pool.ntp.org >>  $TARGET_DIR/etc/ntp.conf
+echo server 3.cn.pool.ntp.org >>  $TARGET_DIR/etc/ntp.conf
