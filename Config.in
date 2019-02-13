@@ -1,0 +1,5 @@
+#
+
+mainmenu "Distro Configuration"
+
+source "package/Config.in"
