@@ -229,6 +229,7 @@ defconfig: $(BUILD_DIR)/buildroot-config/conf prepare-kconfig
 
 define percent_defconfig
 %_defconfig: $(BUILD_DIR)/buildroot-config/conf $(1)/configs/%_defconfig prepare-kconfig
+	$(TOPDIR)/scripts/expand_install.sh $(1)/configs/$$@ $(O)/.install
 	$(TOPDIR)/scripts/defconfig_hook.py -m $(1)/configs/$$@ $(O)/.rockchipconfig
 	@$$(COMMON_CONFIG_ENV) BR2_DEFCONFIG=$(1)/configs/$$@ \
 		$$< --defconfig=$(O)/.rockchipconfig $$(CONFIG_CONFIG_IN)
