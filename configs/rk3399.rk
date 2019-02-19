@@ -1,12 +1,10 @@
 busybox
-partinit
-usbdevice
+rkscript
 adbd
 ums
 resize-helper
 alsa-config
 libmad
-rkscript
 rkwifibt
 weston
 glmark2
