@@ -228,20 +228,25 @@ defconfig: $(BUILD_DIR)/buildroot-config/conf prepare-kconfig
 	@$(COMMON_CONFIG_ENV) $< --defconfig$(if $(DEFCONFIG),=$(DEFCONFIG)) $(CONFIG_CONFIG_IN)
 
 define percent_defconfig
-# Override the BR2_DEFCONFIG from COMMON_CONFIG_ENV with the new defconfig
 %_defconfig: $(BUILD_DIR)/buildroot-config/conf $(1)/configs/%_defconfig prepare-kconfig
+	$(TOPDIR)/scripts/defconfig_hook.py -m $(1)/configs/$$@ $(O)/.rockchipconfig
 	@$$(COMMON_CONFIG_ENV) BR2_DEFCONFIG=$(1)/configs/$$@ \
-		$$< --defconfig=$(1)/configs/$$@ $$(CONFIG_CONFIG_IN)
+		$$< --defconfig=$(O)/.rockchipconfig $$(CONFIG_CONFIG_IN)
 endef
 $(eval $(call percent_defconfig,$(TOPDIR))$(sep))
 
 update-defconfig: savedefconfig
 
+CFG_ = $(shell grep BR2_DEFCONFIG $(BR2_CONFIG) | cut -d= -f2)
 savedefconfig: $(BUILD_DIR)/buildroot-config/conf prepare-kconfig
-	@$(COMMON_CONFIG_ENV) $< \
-		--savedefconfig=$(if $(DEFCONFIG),$(DEFCONFIG),$(CONFIG_DIR)/defconfig) \
-		$(CONFIG_CONFIG_IN)
-	@$(SED) '/BR2_DEFCONFIG=/d' $(if $(DEFCONFIG),$(DEFCONFIG),$(CONFIG_DIR)/defconfig)
+	grep "#include" $(CFG_) > $(CFG_).split || true
+
+	@$(COMMON_CONFIG_ENV) $< --savedefconfig=$(CFG_) $(CONFIG_CONFIG_IN)
+	@$(SED) '/BR2_DEFCONFIG=/d' $(CFG_)
+
+	cat $(CFG_) >> $(CFG_).split
+	$(TOPDIR)/scripts/defconfig_hook.py -s $(CFG_).split $(CFG_)
+	rm $(CFG_).split
 
 .PHONY: defconfig savedefconfig update-defconfig
 
