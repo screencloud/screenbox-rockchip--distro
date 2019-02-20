@@ -6,15 +6,13 @@ TOP_DIR=$DISTRO_DIR/..
 
 source $TOP_DIR/device/rockchip/.BoardConfig.mk
 source $DISTRO_DIR/envsetup.sh
-
+source $OUTPUT_DIR/.config
 MIRROR_FILE=$OUTPUT_DIR/.mirror
-DEFCONFIG_FILE=$OUTPUT_DIR/.defconfig
 DISTRO_CONFIG=$OUTPUT_DIR/.config
 ROOTFS_DEBUG_EXT4=$IMAGE_DIR/rootfs.debug.ext4
 ROOTFS_DEBUG_SQUASHFS=$IMAGE_DIR/rootfs.debug.squashfs
 ROOTFS_EXT4=$IMAGE_DIR/rootfs.ext4
 ROOTFS_SQUASHFS=$IMAGE_DIR/rootfs.squashfs
-DEFCONFIG=$1
 BUILD_PACKAGE=$1
 SUITE=buster
 
@@ -146,7 +144,16 @@ pack()
 build_package()
 {
 	pkg=$1
+	echo "building package $pkg"
 	if [ -x $PACKAGE_DIR/$pkg/make.sh ];then
+		dependence=`grep DEPENDENCIES $PACKAGE_DIR/$pkg/make.sh | cut -d = -f 2`
+		echo ""dependence=$dependence
+		if [ -n "$dependence" ];then
+			for d in "$dependence"
+			do
+				build_package $d
+			done
+		fi
 		run $PACKAGE_DIR/$pkg/make.sh
 	fi
 }
@@ -154,9 +161,12 @@ build_package()
 build_packages()
 {
 	echo "building package: $RK_PKG"
-	for p in $RK_PKG
-	do
-		build_package $p
+	for p in $(ls $DISTRO_DIR/package/);do
+	[ -d $DISTRO_DIR/package/$p ] || continue
+	config=BR2_PACKAGE_$(echo $p|tr 'a-z-' 'A-Z_')
+	build=$(eval echo -n \$$config)
+	#echo "Build $pkg($config)? ${build:-n}"
+	[ x$build == xy ] && build_package $p
 	done
 }
 
@@ -169,24 +179,9 @@ init()
 		ARCH=arm64
 	fi
 
-	if [ -z $DEFCONFIG ];then
-		if [ -e $DEFCONFIG_FILE ];then
- 			DEFCONFIG=`cat $DEFCONFIG_FILE`
-		else
-			DEFCONFIG=default_defconfig
-			echo "$DEFCONFIG" > $DEFCONFIG_FILE
-		fi
-	else
-		echo "$DEFCONFIG" > $DEFCONFIG_FILE
-	fi
-	
-	PREBUILT_CONFIG=`sed -n 1p $CONFIGS_DIR/$DEFCONFIG`
-	RK_CONFIG=`sed -n 2p $CONFIGS_DIR/$DEFCONFIG`
-	#echo "PREBUILT_CONFIG: $PREBUILT_CONFIG, RK_CONFIG: $RK_CONFIG"
-	while read line1; do PREBUILT_PKG="$PREBUILT_PKG $line1"; done < "$CONFIGS_DIR/$PREBUILT_CONFIG"
-	while read line2; do SYSROOT_PKG="$SYSROOT_PKG $line2"; done < "$CONFIGS_DIR/sysroot.config"
-	while read line3; do RK_PKG="$RK_PKG $line3"; done < "$CONFIGS_DIR/$RK_CONFIG"
-	#echo "PREBUILT_PKG: $PREBUILT_PKG, SYSROOT_PKG: $SYSROOT_PKG, RK_PKG: $RK_PKG"
+	while read line1; do INSTALL_PKG="$INSTALL_PKG $line1"; done < "$OUTPUT_DIR/.install"
+	while read line2; do SYSROOT_PKG="$SYSROOT_PKG $line2"; done < "$CONFIGS_DIR/rockchip/sysroot.install"
+	#while read line3; do RK_PKG="$RK_PKG $line3"; done < "$CONFIGS_DIR/$RK_CONFIG"
         if [ ! -e $OUTPUT_DIR/.mirror ];then
 		echo "find the fastest mirror"
 		MIRROR=`$SCRIPTS_DIR/get_mirror.sh $OS $ARCH`
@@ -199,8 +194,8 @@ init()
 build_target_base()
 {
 if [ ! -e $OUTPUT_DIR/.targetpkg.done ];then
-	echo "build target $OS $SUITE $ARCH package: $TARGET_PKG"
-	run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $TARGET_DIR -m $MIRROR -p "$PREBUILT_PKG" -s $SUITE
+	echo "build target $OS $SUITE $ARCH package: $INSTALL_PKG"
+	run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $TARGET_DIR -m $MIRROR -p "$INSTALL_PKG" -s $SUITE
 	$SCRIPTS_DIR/fix_link.sh $TARGET_DIR/usr/lib/$TOOLCHAIN
 	#run $SCRIPTS_DIR/debootstrap_build.sh -a $ARCH -d $OUTPUT_DIR/debootstrap -m $MIRROR -p "$PACKAGES" -s $SUITE
 	echo "deb [arch=$ARCH] $MIRROR $SUITE main" > $TARGET_DIR/etc/apt/sources.list.d/multistrap-debian.list
@@ -236,25 +231,21 @@ build_all()
 main()
 {
 	if [ x$1 == ximage ];then
-		DEFCONFIG=
 		init
 		pack
 		exit 0
 	elif [ x$1 == xsysroot ];then
 		rm -f $OUTPUT_DIR/.sysrootpkg.done
-		DEFCONFIG=
 		init
 		build_sysroot
 		exit 0
 	elif [ x$1 == xtarget ];then
 		rm -f $OUTPUT_DIR/.targetpkg.done
-		DEFCONFIG=
 		init
 		build_target_base
 		exit 0
 	elif [ -x $PACKAGE_DIR/$1/make.sh ];then
 		ARCH=$RK_ARCH
-		DEFCONFIG=
 		build_package $1
 		exit 0
 	else

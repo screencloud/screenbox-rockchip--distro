@@ -1,2 +1,12 @@
-rk3399.config
-rk3399.rk
+#include "base.install"
+#include "base.config"
+#include "audio.install"
+#include "audio.config"
+#include "graphics.install"
+#include "graphics.config"
+#include "debug.install"
+#include "video.config"
+#include "qtapp.install"
+#include "qtapp.config"
+#include "wifi.install"
+#include "wifi.config"
