@@ -143,18 +143,19 @@ pack()
 
 build_package()
 {
-	pkg=$1
+	local pkg=$1
 	echo "building package $pkg"
 	if [ -x $PACKAGE_DIR/$pkg/make.sh ];then
-		dependence=`grep DEPENDENCIES $PACKAGE_DIR/$pkg/make.sh | cut -d = -f 2`
-		echo ""dependence=$dependence
+		eval local dependence=`grep DEPENDENCIES $PACKAGE_DIR/$pkg/make.sh | cut -d = -f 2`
+		echo "dependence=$dependence"
 		if [ -n "$dependence" ];then
-			for d in "$dependence"
+			for d in $dependence
 			do
 				build_package $d
 			done
 		fi
 		run $PACKAGE_DIR/$pkg/make.sh
+		echo "build $pkg done!!!"
 	fi
 }
 
@@ -163,8 +164,8 @@ build_packages()
 	echo "building package: $RK_PKG"
 	for p in $(ls $DISTRO_DIR/package/);do
 	[ -d $DISTRO_DIR/package/$p ] || continue
-	config=BR2_PACKAGE_$(echo $p|tr 'a-z-' 'A-Z_')
-	build=$(eval echo -n \$$config)
+	local config=BR2_PACKAGE_$(echo $p|tr 'a-z-' 'A-Z_')
+	local build=$(eval echo -n \$$config)
 	#echo "Build $pkg($config)? ${build:-n}"
 	[ x$build == xy ] && build_package $p
 	done
