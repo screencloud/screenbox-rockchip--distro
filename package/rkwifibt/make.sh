@@ -9,6 +9,9 @@ if [ -e $TOP_DIR/build.sh ] && [ ! -e $OUTPUT_DIR/.kernelmodules.done ];then
 fi
 
 BT_TTY=ttyS0
+if [ ! -z $BR2_PACKAGE_RKWIFIBT_BTUART ];then
+	BT_TTY=$BR2_PACKAGE_RKWIFIBT_BTUART
+fi
 
 mkdir -p $TARGET_DIR/system/lib/modules
 mkdir -p $TARGET_DIR/system/etc/firmware
@@ -18,7 +21,7 @@ find $TOP_DIR/kernel/drivers/net/wireless/rockchip_wlan/*  -name "*.ko" | xargs 
 install -m 0644 -D $TOP_DIR/external/rkwifibt/firmware/broadcom/all/WIFI_FIRMWARE/* $TARGET_DIR/system/etc/firmware/
 install -m 0644 -D $TOP_DIR/external/rkwifibt/firmware/broadcom/all/BT_FIRMWARE/* $TARGET_DIR/system/etc/firmware/
 install -m 0755 -D $TOP_DIR/external/rkwifibt/S66load_wifi_modules $TARGET_DIR/etc/init.d/
-sed -i 's/BT_TTY_DEV/\/dev\/ttyS0/g' $TARGET_DIR/etc/init.d/S66load_wifi_modules
+sed -i 's/BT_TTY_DEV/\/dev\/$BT_TTY/g' $TARGET_DIR/etc/init.d/S66load_wifi_modules
 install -m 0644 -D $TOP_DIR/external/rkwifibt/wpa_supplicant.conf $TARGET_DIR/etc/wpa_supplicant.conf
 install -m 0644 -D $TOP_DIR/external/rkwifibt/dnsmasq.conf $TARGET_DIR/etc/dnsmasq.conf
 install -m 0755 -D $TOP_DIR/external/rkwifibt/wifi_start.sh $TARGET_DIR/usr/bin/
