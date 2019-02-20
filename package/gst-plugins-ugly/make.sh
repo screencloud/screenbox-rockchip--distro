@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-
+DEPENDENCIES=gst-plugins-base
 PKG=gst-plugins-ugly-1.14.4
 if [ ! -e $DOWNLOAD_DIR/$PKG.tar.xz ];then
 	wget -P $DOWNLOAD_DIR https://gstreamer.freedesktop.org/src/gst-plugins-ugly/$PKG.tar.xz

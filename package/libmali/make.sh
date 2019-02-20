@@ -1,5 +1,6 @@
 #!/bin/bash
 
+DEPENDENCIES=weston
 rm_so()
 {
 	rm -f $TARGET_DIR/usr/lib/$TOOLCHAIN/libmali*

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+DEPENDENCIES=gstreamer
 PKG=music
 #QMAKE=/usr/bin/qmake
 QMAKE=$TOP_DIR/buildroot/output/rockchip_rk3399/host/bin/qmake
