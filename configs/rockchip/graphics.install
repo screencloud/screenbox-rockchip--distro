@@ -1,4 +1,4 @@
-libpng16-16
+libpng-dev
 libjpeg-dev
 libegl1-mesa-dev
 libgles2-mesa-dev
@@ -11,4 +11,3 @@ wayland-protocols
 libcairo2-dev
 libdbus-1-dev
 libxml2-dev
-libpam0g-dev
