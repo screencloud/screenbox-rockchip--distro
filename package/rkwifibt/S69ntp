@@ -25,6 +25,7 @@ case "$1" in
     sleep 1
     start-stop-daemon -K -q -n $NAME
     [ $? = 0 ] && echo "OK" || echo "FAIL"
+    hwclock -w
     ;;
   restart|reload)
     echo "Restarting $NAME: "
