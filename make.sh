@@ -141,6 +141,12 @@ pack()
 	fi
 }
 
+install_packge()
+{
+run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $1 -m $MIRROR -p "$2" -s $SUITE
+$SCRIPTS_DIR/fix_link.sh $1/usr/lib/$TOOLCHAIN
+}
+
 build_package()
 {
 	local pkg=$1
@@ -155,6 +161,8 @@ build_package()
 		fi
 		run $PACKAGE_DIR/$pkg/make.sh
 		echo "build $pkg done!!!"
+	else
+		install_packge $TARGET_DIR $pkg
 	fi
 }
 
@@ -189,12 +197,6 @@ init()
 	else
 		MIRROR=`cat $OUTPUT_DIR/.mirror`
         fi
-}
-
-install_packge()
-{
-run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $1 -m $MIRROR -p "$2" -s $SUITE
-$SCRIPTS_DIR/fix_link.sh $1/usr/lib/$TOOLCHAIN
 }
 
 build_target_base()
@@ -247,12 +249,12 @@ main()
 		init
 		build_target_base
 		exit 0
-	elif [ -x $PACKAGE_DIR/$1/make.sh ];then
-		ARCH=$RK_ARCH
-		build_package $1
+	elif [ -z $1 ];then
+		build_all
 		exit 0
 	else
-		build_all
+		init
+		build_package $1
 		exit 0
 	fi
 }
