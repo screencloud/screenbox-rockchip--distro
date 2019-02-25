@@ -191,13 +191,17 @@ init()
         fi
 }
 
+install_packge()
+{
+run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $1 -m $MIRROR -p "$2" -s $SUITE
+$SCRIPTS_DIR/fix_link.sh $1/usr/lib/$TOOLCHAIN
+}
+
 build_target_base()
 {
 if [ ! -e $OUTPUT_DIR/.targetpkg.done ];then
 	echo "build target $OS $SUITE $ARCH package: $INSTALL_PKG"
-	run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $TARGET_DIR -m $MIRROR -p "$INSTALL_PKG" -s $SUITE
-	$SCRIPTS_DIR/fix_link.sh $TARGET_DIR/usr/lib/$TOOLCHAIN
-	#run $SCRIPTS_DIR/debootstrap_build.sh -a $ARCH -d $OUTPUT_DIR/debootstrap -m $MIRROR -p "$PACKAGES" -s $SUITE
+	install_packge $TARGET_DIR "$INSTALL_PKG"
 	echo "deb [arch=$ARCH] $MIRROR $SUITE main" > $TARGET_DIR/etc/apt/sources.list.d/multistrap-debian.list
 	touch $OUTPUT_DIR/.targetpkg.done
 else
@@ -209,8 +213,7 @@ build_sysroot()
 {
 if [ ! -e $OUTPUT_DIR/.sysrootpkg.done ];then
         echo "build sysroot package for $OS $SUITE: $SYSROOT_PKG"
-        run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $SYSROOT_DIR -m $MIRROR -p "$SYSROOT_PKG" -s $SUITE
-	$SCRIPTS_DIR/fix_link.sh $SYSROOT_DIR/usr/lib/$TOOLCHAIN
+	install_packge $SYSROOT_DIR "$SYSROOT_PKG"
         touch $OUTPUT_DIR/.sysrootpkg.done
 else
         echo "$OS $ARCH $SUITE package already installed for sysroot, skip"
