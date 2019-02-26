@@ -201,14 +201,9 @@ init()
 
 build_target_base()
 {
-if [ ! -e $OUTPUT_DIR/.targetpkg.done ];then
 	echo "build target $OS $SUITE $ARCH package: $INSTALL_PKG"
 	install_packge $TARGET_DIR "$INSTALL_PKG"
 	echo "deb [arch=$ARCH] $MIRROR $SUITE main" > $TARGET_DIR/etc/apt/sources.list.d/multistrap-debian.list
-	touch $OUTPUT_DIR/.targetpkg.done
-else
-	echo "$OS $ARCH $SUITE package already installed for target, skip"
-fi
 }
 
 build_sysroot()
