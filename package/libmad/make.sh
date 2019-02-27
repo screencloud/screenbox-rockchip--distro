@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-
+DEPENDENCIES=libmad0
 MINIMAD_GZ=$SYSROOT/usr/share/doc/libmad0-dev/examples/minimad.c.gz
 if [ -e $MINIMAD_GZ ];then
 	gzip -d $MINIMAD_GZ
