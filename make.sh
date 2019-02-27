@@ -157,7 +157,7 @@ build_package()
 			return
 		fi
 	fi
-	echo "building package $pkg"
+
 	if [ -x $PACKAGE_DIR/$pkg/make.sh ];then
 		eval local dependence=`grep DEPENDENCIES $PACKAGE_DIR/$pkg/make.sh | cut -d = -f 2`
 		if [ -n "$dependence" ];then
@@ -166,9 +166,11 @@ build_package()
 				build_package $d
 			done
 		fi
-			run $PACKAGE_DIR/$pkg/make.sh
-			echo "build $pkg done!!!"
+		echo "building package $pkg"
+		run $PACKAGE_DIR/$pkg/make.sh
+		echo "build $pkg done!!!"
 	else
+		echo "building package $pkg"
 		install_packge $TARGET_DIR $pkg
 	fi
 	touch $BUILD_DIR/$pkg/.timestamp
