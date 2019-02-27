@@ -1,8 +1,7 @@
 #!/bin/bash
 
 set -e
-
-set -e
+DEPENDENCIES="android-tools-adbd parted gdisk"
 source $TOP_DIR/device/rockchip/.BoardConfig.mk
 source $OUTPUT_DIR/.config
 install -m 0755 -D $TOP_DIR/external/rkscript/S50usbdevice $TARGET_DIR/etc/init.d/
