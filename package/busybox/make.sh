@@ -1,14 +1,16 @@
 #!/bin/bash
 
 set -e
-
-PKG=busybox-1.27.2
-if [ ! -e $DOWNLOAD_DIR/$PKG.tar.bz2 ];then
-	wget -P $DOWNLOAD_DIR https://busybox.net/downloads/$PKG.tar.bz2
+DEPENDENCIES=udev
+PKG=busybox
+VERSION=1.27.2
+if [ ! -e $DOWNLOAD_DIR/$PKG-$VERSION.tar.bz2 ];then
+	wget -P $DOWNLOAD_DIR https://busybox.net/downloads/$PKG-$VERSION.tar.bz2
 fi
 
-if [ ! -d $BUILD_DIR/$PKG ];then
-	tar -jxf $DOWNLOAD_DIR/$PKG.tar.bz2 -C $BUILD_DIR
+if [ -z `ls -A $BUILD_DIR/$PKG` ];then
+	tar -jxf $DOWNLOAD_DIR/$PKG-$VERSION.tar.bz2 -C $BUILD_DIR/$PKG
+	mv $BUILD_DIR/$PKG/$PKG-$VERSION/* $BUILD_DIR/$PKG/
 	$SCRIPTS_DIR/apply-patches.sh $BUILD_DIR/$PKG $PACKAGE_DIR/busybox
 	cp $PACKAGE_DIR/busybox/busybox.config $BUILD_DIR/$PKG/.config
 fi
