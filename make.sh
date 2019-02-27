@@ -150,6 +150,13 @@ $SCRIPTS_DIR/fix_link.sh $1/usr/lib/$TOOLCHAIN
 build_package()
 {
 	local pkg=$1
+	mkdir -p $BUILD_DIR/$pkg
+	if [ -e $BUILD_DIR/$pkg/.timestamp ];then
+		if [ -z `find $BUILD_DIR/$pkg -newer $BUILD_DIR/$pkg/.timestamp` ];then
+			echo "$pkg has been built before, skiped"
+			return
+		fi
+	fi
 	echo "building package $pkg"
 	if [ -x $PACKAGE_DIR/$pkg/make.sh ];then
 		eval local dependence=`grep DEPENDENCIES $PACKAGE_DIR/$pkg/make.sh | cut -d = -f 2`
@@ -159,11 +166,12 @@ build_package()
 				build_package $d
 			done
 		fi
-		run $PACKAGE_DIR/$pkg/make.sh
-		echo "build $pkg done!!!"
+			run $PACKAGE_DIR/$pkg/make.sh
+			echo "build $pkg done!!!"
 	else
 		install_packge $TARGET_DIR $pkg
 	fi
+	touch $BUILD_DIR/$pkg/.timestamp
 }
 
 build_packages()
