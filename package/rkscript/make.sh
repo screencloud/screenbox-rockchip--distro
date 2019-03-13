@@ -10,6 +10,8 @@ install -m 0755 -D $TOP_DIR/external/rkscript/usbdevice $TARGET_DIR/usr/bin/
 install -m 0755 -D $TOP_DIR/external/rkscript/glmarktest.sh $TARGET_DIR/usr/bin/
 install -m 0755 -D $TOP_DIR/external/rkscript/gstplay.sh $TARGET_DIR/usr/bin/
 install -m 0755 -D $TOP_DIR/external/rkscript/mp3play.sh $TARGET_DIR/usr/bin/
+install -m 0755 -D $TOP_DIR/external/rkscript/gstwavplay.sh $TARGET_DIR/usr/bin/
+install -m 0755 -D $TOP_DIR/external/rkscript/gstmp3play.sh $TARGET_DIR/usr/bin/
 install -m 0755 -D $TOP_DIR/external/rkscript/waylandtest.sh $TARGET_DIR/usr/bin/
 install -m 0755 -D $TOP_DIR/external/rkscript/S21mountall.sh $TARGET_DIR/etc/init.d/
 install -m 0755 -D $TOP_DIR/external/rkscript/fstab $TARGET_DIR/etc/
