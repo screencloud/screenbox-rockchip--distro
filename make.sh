@@ -198,8 +198,6 @@ init()
 	fi
 
 	while read line1; do INSTALL_PKG="$INSTALL_PKG $line1"; done < "$OUTPUT_DIR/.install"
-	while read line2; do SYSROOT_PKG="$SYSROOT_PKG $line2"; done < "$CONFIGS_DIR/rockchip/sysroot.install"
-	#while read line3; do RK_PKG="$RK_PKG $line3"; done < "$CONFIGS_DIR/$RK_CONFIG"
         if [ ! -e $OUTPUT_DIR/.mirror ];then
 		echo "find the fastest mirror"
 		MIRROR=`$SCRIPTS_DIR/get_mirror.sh $OS $ARCH`
@@ -216,22 +214,9 @@ build_target_base()
 	echo "deb [arch=$ARCH] $MIRROR $SUITE main" > $TARGET_DIR/etc/apt/sources.list.d/multistrap-debian.list
 }
 
-build_sysroot()
-{
-if [ ! -e $OUTPUT_DIR/.sysrootpkg.done ];then
-        echo "build sysroot package for $OS $SUITE: $SYSROOT_PKG"
-	install_packge $SYSROOT_DIR "$SYSROOT_PKG"
-        touch $OUTPUT_DIR/.sysrootpkg.done
-else
-        echo "$OS $ARCH $SUITE package already installed for sysroot, skip"
-fi
-}
-
-
 build_all()
 {
 	init
-	build_sysroot
 	build_target_base
 	build_packages
 	run rsync -a --ignore-times --keep-dirlinks --chmod=u=rwX,go=rX --exclude .empty $OVERLAY_DIR/ $TARGET_DIR/
@@ -243,11 +228,6 @@ main()
 	if [ x$1 == ximage ];then
 		init
 		pack
-		exit 0
-	elif [ x$1 == xsysroot ];then
-		rm -f $OUTPUT_DIR/.sysrootpkg.done
-		init
-		build_sysroot
 		exit 0
 	elif [ x$1 == xtarget ];then
 		rm -f $OUTPUT_DIR/.targetpkg.done
