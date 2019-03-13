@@ -1,14 +1,16 @@
 #!/bin/bash
 
 set -e
-
-PKG=gstreamer-1.14.4
-if [ ! -e $DOWNLOAD_DIR/$PKG.tar.xz ];then
-	wget -P $DOWNLOAD_DIR https://gstreamer.freedesktop.org/src/gstreamer/$PKG.tar.xz
+DEPENDENCIES=libglib2.0-dev
+PKG=gstreamer
+VERSION=1.14.4
+if [ ! -e $DOWNLOAD_DIR/$PKG-$VERSION.tar.xz ];then
+	wget -P $DOWNLOAD_DIR https://gstreamer.freedesktop.org/src/gstreamer/$PKG-$VERSION.tar.xz
 fi
 
-if [ ! -d $BUILD_DIR/$PKG ];then
-	tar -xf $DOWNLOAD_DIR/$PKG.tar.xz -C $BUILD_DIR
+if [ ! -d $BUILD_DIR/$PKG/$PKG-$VERSION ];then
+	tar -xf $DOWNLOAD_DIR/$PKG-$VERSION.tar.xz -C $BUILD_DIR/$PKG
+	mv $BUILD_DIR/$PKG/$PKG-$VERSION/* $BUILD_DIR/$PKG/
 fi
 
 cd $BUILD_DIR/$PKG
