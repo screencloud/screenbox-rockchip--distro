@@ -14,7 +14,8 @@ ROOTFS_DEBUG_SQUASHFS=$IMAGE_DIR/rootfs.debug.squashfs
 ROOTFS_EXT4=$IMAGE_DIR/rootfs.ext4
 ROOTFS_SQUASHFS=$IMAGE_DIR/rootfs.squashfs
 BUILD_PACKAGE=$1
-SUITE=buster
+export SUITE=buster
+export ARCH=$RK_ARCH
 
 if [ $SUITE==buster ] || [ $SUITE==stretch ] || [ $SUITE==sid ] || [ $SUITE==testing ];then
 	OS=debian
@@ -141,41 +142,6 @@ pack()
 	fi
 }
 
-install_packge()
-{
-run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $1 -m $MIRROR -p "$2" -s $SUITE
-$SCRIPTS_DIR/fix_link.sh $1/usr/lib/$TOOLCHAIN
-}
-
-build_package()
-{
-	local pkg=$1
-	mkdir -p $BUILD_DIR/$pkg
-	if [ -e $BUILD_DIR/$pkg/.timestamp ];then
-		if [ -z `find $BUILD_DIR/$pkg -newer $BUILD_DIR/$pkg/.timestamp` ];then
-			echo "$pkg has been built before, skiped"
-			return
-		fi
-	fi
-
-	if [ -x $PACKAGE_DIR/$pkg/make.sh ];then
-		eval local dependence=`grep DEPENDENCIES $PACKAGE_DIR/$pkg/make.sh | cut -d = -f 2`
-		if [ -n "$dependence" ];then
-			for d in $dependence
-			do
-				build_package $d
-			done
-		fi
-		echo "building package $pkg"
-		run $PACKAGE_DIR/$pkg/make.sh
-		echo "build $pkg done!!!"
-	else
-		echo "building package $pkg"
-		install_packge $TARGET_DIR $pkg
-	fi
-	touch $BUILD_DIR/$pkg/.timestamp
-}
-
 build_packages()
 {
 	for p in $(ls $DISTRO_DIR/package/);do
@@ -183,7 +149,7 @@ build_packages()
 		local config=BR2_PACKAGE_$(echo $p|tr 'a-z-' 'A-Z_')
 		local build=$(eval echo -n \$$config)
 		#echo "Build $pkg($config)? ${build:-n}"
-		[ x$build == xy ] && build_package $p
+		[ x$build == xy ] && $SCRIPTS_DIR/build_pkg.sh $ARCH $SUITE $MIRROR $p
 	done
 	echo "finish building all packages"
 }
@@ -192,32 +158,30 @@ init()
 {
 	mkdir -p $OUTPUT_DIR $BUILD_DIR $TARGET_DIR $IMAGE_DIR $MOUNT_DIR $SYSROOT_DIR $TARGET_DIR/etc/apt/sources.list.d
 
-	ARCH=$RK_ARCH
 	if [ -z $ARCH ];then
-		ARCH=arm64
+		export ARCH=arm64
 	fi
 
 	while read line1; do INSTALL_PKG="$INSTALL_PKG $line1"; done < "$OUTPUT_DIR/.install"
         if [ ! -e $OUTPUT_DIR/.mirror ];then
 		echo "find the fastest mirror"
-		MIRROR=`$SCRIPTS_DIR/get_mirror.sh $OS $ARCH`
+		export MIRROR=`$SCRIPTS_DIR/get_mirror.sh $OS $ARCH`
 		echo $MIRROR > $OUTPUT_DIR/.mirror
 	else
-		MIRROR=`cat $OUTPUT_DIR/.mirror`
+		export MIRROR=`cat $OUTPUT_DIR/.mirror`
         fi
 }
 
-build_target_base()
+build_base()
 {
-	echo "build target $OS $SUITE $ARCH package: $INSTALL_PKG"
-	install_packge $TARGET_DIR "$INSTALL_PKG"
+	$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR $INSTALL_PKG
 	echo "deb [arch=$ARCH] $MIRROR $SUITE main" > $TARGET_DIR/etc/apt/sources.list.d/multistrap-debian.list
 }
 
 build_all()
 {
 	init
-	build_target_base
+	build_base
 	build_packages
 	run rsync -a --ignore-times --keep-dirlinks --chmod=u=rwX,go=rX --exclude .empty $OVERLAY_DIR/ $TARGET_DIR/
 	pack
@@ -229,17 +193,16 @@ main()
 		init
 		pack
 		exit 0
-	elif [ x$1 == xtarget ];then
-		rm -f $OUTPUT_DIR/.targetpkg.done
+	elif [ x$1 == xbase ];then
 		init
-		build_target_base
+		build_base
 		exit 0
 	elif [ -z $1 ];then
 		build_all
 		exit 0
 	else
 		init
-		build_package $1
+		$SCRIPTS_DIR/build_pkg.sh $ARCH $SUITE $MIRROR $1
 		exit 0
 	fi
 }
