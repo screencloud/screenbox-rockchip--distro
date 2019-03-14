@@ -2,6 +2,7 @@
 
 set -e
 DEPENDENCIES=gst-plugins-base
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
 PKG=gst-plugins-bad
 VERSION=1.14.4
 source $OUTPUT_DIR/.config

@@ -2,6 +2,7 @@
 
 set -e
 DEPENDENCIES=libmad0
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
 MINIMAD_GZ=$SYSROOT/usr/share/doc/libmad0-dev/examples/minimad.c.gz
 if [ -e $MINIMAD_GZ ];then
 	gzip -d $MINIMAD_GZ

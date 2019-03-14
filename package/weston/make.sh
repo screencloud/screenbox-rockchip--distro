@@ -1,8 +1,9 @@
 #!/bin/bash
 
 set -e
+DEPENDENCIES="libdrm libpng-dev libjpeg-dev libegl1-mesa-dev libgles2-mesa-dev libgbm-dev libudev-dev libinput-dev libpixman-1-dev libxkbcommon-dev wayland-protocols libcairo2-dev libdbus-1-dev libxml2-dev libpam0g-dev"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
 PKG=weston-5.0.0
-
 if [ ! -e $DOWNLOAD_DIR/$PKG.tar.gz ];then
         wget -O $DOWNLOAD_DIR/$PKG.tar.gz https://github.com/wayland-project/weston/archive/5.0.0.tar.gz
 fi

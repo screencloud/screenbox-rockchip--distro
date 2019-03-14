@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-DEPENDENCIES=gst-plugins-base
+DEPENDENCIES="gst-plugins-base"
 PKG=gst-plugins-good
 VERSION=1.14.4
 source $OUTPUT_DIR/.config
@@ -404,6 +404,7 @@ fi
 
 if [ x$BR2_PACKAGE_GST_PLUGINS_GOOD_MPG123 = xy ];then
 	OPTS="$OPTS --enable-mpg123"
+	DEPENDENCIES="$DEPENDENCIES libmpg123"
 else
 	OPTS="$OPTS --disable-mpg123"
 fi
@@ -479,6 +480,7 @@ if [ x$BR2_PACKAGE_GST_PLUGINS_GOOD_BZ2 = xy ];then
 else
 	OPTS="$OPTS --disable-bz2"
 fi
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
 echo "opts: $OPTS"
 ./configure $OPTS
 make

@@ -2,6 +2,7 @@
 
 set -e
 DEPENDENCIES=libmpg123-dev
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
 MPG123_TO_OUT123_GZ=$TARGET_DIR/usr/share/doc/libmpg123-dev/examples/mpg123_to_out123.c.gz
 MPG123_TO_OUT123_C=$TARGET_DIR/usr/share/doc/libmpg123-dev/examples/mpg123_to_out123.c
 MPG123_TO_WAV_C=$TARGET_DIR/usr/share/doc/libmpg123-dev/examples/mpg123_to_wav.c

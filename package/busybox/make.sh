@@ -2,6 +2,7 @@
 
 set -e
 DEPENDENCIES=udev
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR $DEPENDENCIES
 PKG=busybox
 VERSION=1.27.2
 if [ ! -e $DOWNLOAD_DIR/$PKG-$VERSION.tar.bz2 ];then

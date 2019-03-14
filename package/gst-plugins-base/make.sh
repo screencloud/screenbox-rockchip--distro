@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-DEPENDENCIES=gstreamer
+DEPENDENCIES="gstreamer"
 PKG=gst-plugins-base
 VERSION=1.14.4
 source $OUTPUT_DIR/.config
@@ -223,6 +223,7 @@ fi
 
 if [ x$BR2_PACKAGE_GST_PLUGINS_BASE_ALSA = xy ];then
 	OPTS="$OPTS --enable-alsa"
+	DEPENDENCIES="$DEPENDENCIES libasound2-dev"
 else
 	OPTS="$OPTS --disable-alsa"
 fi
@@ -279,7 +280,7 @@ if [ x$BR2_PACKAGE_GST_PLUGINS_BASE_VORBIS = xy ];then
 else
 	OPTS="$OPTS --disable-vorbis"
 fi
-
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
 echo "opts: $OPTS"
 ./configure $OPTS
 make
