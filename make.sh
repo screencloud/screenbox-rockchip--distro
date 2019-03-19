@@ -64,6 +64,8 @@ pack_ext4()
 	SIZE=$[SIZE+EXTRA_SIZE]
 	echo "genext2fs -b $SIZE -N $inode_counti -d $SRC $DST"
 	genext2fs -b $SIZE -N $inode_counti -d $SRC $DST
+	echo "tune2fs -o has_journal,dir_index,filetype $DST"
+	tune2fs -O has_journal,dir_index,filetype $DST
 	e2fsck -fy $DST
 #	if [ -x $DISTRO_DIR/../device/rockchip/common/mke2img.sh ];then
 #		$DISTRO_DIR/../device/rockchip/common/mke2img.sh $SRC $DST
