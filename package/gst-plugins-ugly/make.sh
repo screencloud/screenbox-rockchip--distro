@@ -4,6 +4,7 @@ set -e
 DEPENDENCIES=gst-plugins-base
 PKG=gst-plugins-ugly
 VERSION=1.14.4
+source $OUTPUT_DIR/.config
 if [ ! -e $DOWNLOAD_DIR/$PKG-$VERSION.tar.xz ];then
 	wget -P $DOWNLOAD_DIR https://gstreamer.freedesktop.org/src/gst-plugins-ugly/$PKG-$VERSION.tar.xz
 fi
@@ -73,6 +74,7 @@ else
 fi
 if [ x$BR2_PACKAGE_GST_PLUGINS_UGLY_MPEG2DEC = xy ];then
 	OPTS="$OPTS --enable-mpeg2dec"
+	DEPENDENCIES="$DEPENDENCIES libmpeg2-4"
 else
 	OPTS="$OPTS --disable-mpeg2dec"
 fi
@@ -89,6 +91,7 @@ else
 	OPTS="$OPTS --disable-x264"
 fi
 $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
+echo "opts: $OPTS"
 ./configure $OPTS
 make
 make install
