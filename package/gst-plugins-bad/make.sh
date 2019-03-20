@@ -626,6 +626,7 @@ fi
 
 if [ x$BR2_PACKAGE_GST_PLUGINS_BAD_FAAD = xy ];then
 	OPTS="$OPTS --enable-faad"
+	DEPENDENCIES="$DEPENDENCIES libfaad-dev"
 else
 	OPTS="$OPTS --disable-faad"
 fi
@@ -935,7 +936,7 @@ if [ x$BR2_PACKAGE_GST_PLUGINS_BAD_WEBRTC = xy ];then
 else
 	OPTS="$OPTS --disable-webrtc"
 fi
-
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
 echo "opts: $OPTS"
 ./configure $OPTS
 make
