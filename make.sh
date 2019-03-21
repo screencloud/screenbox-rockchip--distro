@@ -174,7 +174,7 @@ init()
 
 build_base()
 {
-	$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR $INSTALL_PKG
+	$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$INSTALL_PKG"
 	echo "deb [arch=$ARCH] $MIRROR $SUITE main" > $TARGET_DIR/etc/apt/sources.list.d/multistrap-debian.list
 }
 
