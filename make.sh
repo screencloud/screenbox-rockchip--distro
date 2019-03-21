@@ -164,8 +164,13 @@ init()
 
 	while read line1; do INSTALL_PKG="$INSTALL_PKG $line1"; done < "$OUTPUT_DIR/.install"
         if [ ! -e $OUTPUT_DIR/.mirror ];then
-		echo "find the fastest mirror"
-		export MIRROR=`$SCRIPTS_DIR/get_mirror.sh $OS $ARCH`
+		if [ x$1 == xdefault ];then
+			echo "use default mirror"
+			export MIRROR=`$SCRIPTS_DIR/get_mirror.sh $OS $ARCH default`
+		else
+			echo "find the fastest mirror"
+			export MIRROR=`$SCRIPTS_DIR/get_mirror.sh $OS $ARCH`
+		fi
 		echo $MIRROR > $OUTPUT_DIR/.mirror
 	else
 		export MIRROR=`cat $OUTPUT_DIR/.mirror`
@@ -180,7 +185,7 @@ build_base()
 
 build_all()
 {
-	init
+	init $1
 	build_base
 	build_packages
 	run rsync -a --ignore-times --keep-dirlinks --chmod=u=rwX,go=rX --exclude .empty $OVERLAY_DIR/ $TARGET_DIR/
@@ -197,8 +202,8 @@ main()
 		init
 		build_base
 		exit 0
-	elif [ -z $1 ];then
-		build_all
+	elif [ -z $1 ] || [ x$1 == xdefault ];then
+		build_all $1
 		exit 0
 	else
 		init
