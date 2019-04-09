@@ -17,9 +17,9 @@ BUILD_PACKAGE=$1
 export SUITE=buster
 export ARCH=$RK_ARCH
 
-if [ $SUITE==buster ] || [ $SUITE==stretch ] || [ $SUITE==sid ] || [ $SUITE==testing ];then
+if [[ $SUITE = buster ]] || [[ $SUITE = stretch ]] || [[ $SUITE = sid ]] || [[ $SUITE = testing ]];then
 	OS=debian
-elif [ $SUITE==bionic ] || [ $SUITE==xenial ] || [ $SUITE==trusty ];then
+elif [[ $SUITE = bionic ]] || [[ $SUITE = xenial ]] || [[ $SUITE = trusty ]];then
 	OS=ubuntu
 fi
 
