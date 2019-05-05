@@ -17,11 +17,7 @@ BUILD_PACKAGE=$1
 export SUITE=buster
 export ARCH=$RK_ARCH
 
-if [[ $SUITE = buster ]] || [[ $SUITE = stretch ]] || [[ $SUITE = sid ]] || [[ $SUITE = testing ]];then
-	OS=debian
-elif [[ $SUITE = bionic ]] || [[ $SUITE = xenial ]] || [[ $SUITE = trusty ]];then
-	OS=ubuntu
-fi
+OS=`$SCRIPTS_DIR/get_distro.sh $SUITE`
 
 log() {
     local format="$1"
