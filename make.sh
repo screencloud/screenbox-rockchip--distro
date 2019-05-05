@@ -151,7 +151,7 @@ build_packages()
 		local config=BR2_PACKAGE_$(echo $p|tr 'a-z-' 'A-Z_')
 		local build=$(eval echo -n \$$config)
 		#echo "Build $pkg($config)? ${build:-n}"
-		[ x$build == xy ] && $SCRIPTS_DIR/build_pkg.sh $ARCH $SUITE $MIRROR $p
+		[ x$build == xy ] && $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR $p
 	done
 	echo "finish building all packages"
 }
@@ -181,7 +181,7 @@ init()
 
 build_base()
 {
-	$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$INSTALL_PKG"
+	$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$INSTALL_PKG" "init"
 	echo "deb [arch=$ARCH] $MIRROR $SUITE main" > $TARGET_DIR/etc/apt/sources.list.d/multistrap-debian.list
 }
 
@@ -209,7 +209,7 @@ main()
 		exit 0
 	else
 		init
-		$SCRIPTS_DIR/build_pkg.sh $ARCH $SUITE $MIRROR $1
+		$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR $1
 		exit 0
 	fi
 }

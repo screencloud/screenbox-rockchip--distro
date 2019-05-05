@@ -9,7 +9,7 @@ if [ ! -e $DOWNLOAD_DIR/$PKG-$VERSION.tar.bz2 ];then
 	wget -P $DOWNLOAD_DIR https://busybox.net/downloads/$PKG-$VERSION.tar.bz2
 fi
 
-if [ -z `ls -A $BUILD_DIR/$PKG` ];then
+if [ ! -e $BUILD_DIR/$PKG/.timestamp ];then
 	tar -jxf $DOWNLOAD_DIR/$PKG-$VERSION.tar.bz2 -C $BUILD_DIR/$PKG
 	mv $BUILD_DIR/$PKG/$PKG-$VERSION/* $BUILD_DIR/$PKG/
 	$SCRIPTS_DIR/apply-patches.sh $BUILD_DIR/$PKG $PACKAGE_DIR/busybox

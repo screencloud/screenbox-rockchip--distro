@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-	echo "Usage: $0: [-e] [-f] [-n] [-v] [-a arch] [-b seed] [-c conf] [-d directory] [-h hook] [-m mirror] [-p packages] [-s suite]" >&2
+	echo "Usage: $0: [-e] [-f] [-n] [-v] [-a arch] [-b seed] [-c conf] [-d directory] [-h hook] [-m mirror] [-p packages] [-s suite] [-u auth]" >&2
 }
 
 log() {
@@ -27,7 +27,7 @@ export PATH=$PATH:/usr/sbin:/sbin
 FORCE=""
 MSTRAP_SIM=
 EXIT_ON_ERROR=true
-while getopts efva:b:c:d:m:n:p:s: opt; do
+while getopts efva:b:c:d:m:n:p:s:u: opt; do
 	case $opt in
 	a) ARCH="$OPTARG";;
 	b) SEED="$OPTARG";;
@@ -40,6 +40,7 @@ while getopts efva:b:c:d:m:n:p:s: opt; do
 	n) MSTRAP_SIM="--simulate";;
 	p) PACKAGES="$OPTARG";;
 	s) SUITE="$OPTARG";;
+	u) NOAUTH="$OPTARG";;
 	v) set -x;;
 	?) usage; exit 1;;
 	esac
@@ -73,6 +74,7 @@ echo "I: seed:    $SEED"
 echo "I: rootdir: $ROOTDIR"
 echo "I: mirror:  $MIRROR"
 echo "I: pkgs:    $PACKAGES"
+echo "I: auth:    $NOAUTH"
 echo "I: ------------------------------------------------------------"
 
 [ -e "$ROOTDIR.tar" ] && [ ! "$FORCE" = true ] && { echo "tarball $ROOTDIR.tar still exists" >&2; exit 1; }
@@ -87,7 +89,7 @@ done < $CONF
 echo "I: create $MULTISTRAPCONF done"
 # download and extract packages
 echo "I: run multistrap" >&2
-run proot -0 multistrap $MSTRAP_SIM -f "$MULTISTRAPCONF"
+run proot -0 multistrap $NOAUTH $MSTRAP_SIM -f "$MULTISTRAPCONF"
 [ -z "$MSTRAP_SIM" ] || exit 0
 # preseed debconf
 echo "I: preseed debconf"
