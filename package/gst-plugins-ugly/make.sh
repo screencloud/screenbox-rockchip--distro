@@ -90,7 +90,7 @@ if [ x$BR2_PACKAGE_GST_PLUGINS_UGLY_X264 = xy ];then
 else
 	OPTS="$OPTS --disable-x264"
 fi
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 echo "opts: $OPTS"
 ./configure $OPTS
 make

@@ -2,7 +2,6 @@
 
 set -e
 DEPENDENCIES=gst-plugins-base
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
 PKG=gst-plugins-bad
 VERSION=1.14.4
 source $OUTPUT_DIR/.config
@@ -936,7 +935,7 @@ if [ x$BR2_PACKAGE_GST_PLUGINS_BAD_WEBRTC = xy ];then
 else
 	OPTS="$OPTS --disable-webrtc"
 fi
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 echo "opts: $OPTS"
 ./configure $OPTS
 make

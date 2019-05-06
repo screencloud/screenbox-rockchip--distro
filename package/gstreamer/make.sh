@@ -2,7 +2,7 @@
 
 set -e
 DEPENDENCIES=libglib2.0-dev
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 PKG=gstreamer
 VERSION=1.14.4
 if [ ! -e $DOWNLOAD_DIR/$PKG-$VERSION.tar.xz ];then

@@ -3,9 +3,9 @@
 set -e
 ARCH=$1
 SUITE=$2
-MIRROR=$3
-PKGS=$4
-INIT=$5
+PKGS=$3
+INIT=$4
+
 log() {
     local format="$1"
     shift
@@ -41,9 +41,9 @@ done
 if [ ! -z "$install" ];then
 	install=eval echo $install
 	if [ $OS == debian ];then
-		$SCRIPTS_DIR/install_debian_pkg.sh $RK_ARCH $SUITE $MIRROR "$install" $INIT
+		$SCRIPTS_DIR/install_debian_pkg.sh $RK_ARCH $SUITE "$install" $INIT
 	elif [ $OS == ubuntu ];then
-		$SCRIPTS_DIR/install_ubuntu_pkg.sh $RK_ARCH $SUITE $MIRROR "$install" $INIT
+		$SCRIPTS_DIR/install_ubuntu_pkg.sh $RK_ARCH $SUITE "$install" $INIT
 	fi
 
 	for p in $install;do

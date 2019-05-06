@@ -480,7 +480,7 @@ if [ x$BR2_PACKAGE_GST_PLUGINS_GOOD_BZ2 = xy ];then
 else
 	OPTS="$OPTS --disable-bz2"
 fi
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 echo "opts: $OPTS"
 ./configure $OPTS
 make

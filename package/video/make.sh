@@ -2,7 +2,7 @@
 
 set -e
 DEPENDENCIES=gstreamer-rockchip
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 PKG=video
 #QMAKE=/usr/bin/qmake
 QMAKE=$TOP_DIR/buildroot/output/rockchip_rk3399/host/bin/qmake

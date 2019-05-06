@@ -2,7 +2,7 @@
 
 set -e
 DEPENDENCIES="libdrm libpng-dev libjpeg-dev libudev-dev libmali"
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 COMMIT=9a03892d0ef250b0eb5c87792dbfbd48e23d15bb
 PKG=glmark2
 if [ ! -e $DOWNLOAD_DIR/$PKG-$COMMIT.tar.gz ];then

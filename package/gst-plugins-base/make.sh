@@ -280,7 +280,7 @@ if [ x$BR2_PACKAGE_GST_PLUGINS_BASE_VORBIS = xy ];then
 else
 	OPTS="$OPTS --disable-vorbis"
 fi
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 echo "opts: $OPTS"
 ./configure $OPTS
 make

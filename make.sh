@@ -7,7 +7,6 @@ TOP_DIR=$DISTRO_DIR/..
 source $TOP_DIR/device/rockchip/.BoardConfig.mk
 source $DISTRO_DIR/envsetup.sh
 source $OUTPUT_DIR/.config
-MIRROR_FILE=$OUTPUT_DIR/.mirror
 DISTRO_CONFIG=$OUTPUT_DIR/.config
 ROOTFS_DEBUG_EXT4=$IMAGE_DIR/rootfs.debug.ext4
 ROOTFS_DEBUG_SQUASHFS=$IMAGE_DIR/rootfs.debug.squashfs
@@ -147,7 +146,7 @@ build_packages()
 		local config=BR2_PACKAGE_$(echo $p|tr 'a-z-' 'A-Z_')
 		local build=$(eval echo -n \$$config)
 		#echo "Build $pkg($config)? ${build:-n}"
-		[ x$build == xy ] && $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR $p
+		[ x$build == xy ] && $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $p
 	done
 	echo "finish building all packages"
 }
@@ -161,23 +160,11 @@ init()
 	fi
 
 	while read line1; do INSTALL_PKG="$INSTALL_PKG $line1"; done < "$OUTPUT_DIR/.install"
-        if [ ! -e $OUTPUT_DIR/.mirror ];then
-		if [ x$1 == xdefault ];then
-			echo "use default mirror"
-			export MIRROR=`$SCRIPTS_DIR/get_mirror.sh $OS $ARCH default`
-		else
-			echo "find the fastest mirror"
-			export MIRROR=`$SCRIPTS_DIR/get_mirror.sh $OS $ARCH`
-		fi
-		echo $MIRROR > $OUTPUT_DIR/.mirror
-	else
-		export MIRROR=`cat $OUTPUT_DIR/.mirror`
-        fi
 }
 
 build_base()
 {
-	$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$INSTALL_PKG" "init"
+	$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$INSTALL_PKG" "init"
 }
 
 build_all()
@@ -204,7 +191,7 @@ main()
 		exit 0
 	else
 		init
-		$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR $1
+		$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $1
 		exit 0
 	fi
 }

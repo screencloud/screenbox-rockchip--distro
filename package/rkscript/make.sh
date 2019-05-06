@@ -2,7 +2,7 @@
 
 set -e
 DEPENDENCIES="android-tools-adbd parted gdisk"
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 source $TOP_DIR/device/rockchip/.BoardConfig.mk
 source $OUTPUT_DIR/.config
 install -m 0755 -D $TOP_DIR/external/rkscript/S50usbdevice $TARGET_DIR/etc/init.d/

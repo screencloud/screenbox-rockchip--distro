@@ -2,7 +2,7 @@
 
 set -e
 DEPENDENCIES=libdrm
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 mkdir -p $BUILD_DIR/mpp
 rm -f BUILD_DIR/mpp/CMakeCache.txt
 cd $BUILD_DIR/mpp

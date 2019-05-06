@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DEPENDENCIES="libdrm libegl1-mesa-dev libgles2-mesa-dev libgbm-dev libwayland-egl1"
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 rm_so()
 {
 	rm -f $TARGET_DIR/usr/lib/$TOOLCHAIN/libmali*

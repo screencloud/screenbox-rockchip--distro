@@ -11,7 +11,7 @@ NETSELECT_APT_URL=http://ftp.cn.debian.org/debian/pool/main/n/netselect/$NETSELE
 NETSELECT_DEB=netselect_0.3.ds1-28+b1_amd64.deb
 NETSELECT_URL=http://ftp.cn.debian.org/debian/pool/main/n/netselect/$NETSELECT_DEB
 
-OS=$1
+OS=`$SCRIPTS_DIR/get_distro.sh $1`
 ARCH=$2
 
 if [ x$3 = xdefault ];then

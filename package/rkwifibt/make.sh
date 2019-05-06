@@ -2,7 +2,7 @@
 
 set -e
 DEPENDENCIES="wpasupplicant dhcpcd5 ntp ntpdate"
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $MIRROR "$DEPENDENCIES"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 source $OUTPUT_DIR/.config
 if [ -e $TOP_DIR/build.sh ] && [ ! -e $OUTPUT_DIR/.kernelmodules.done ];then
 	export LDFLAGS="--sysroot=$SYSROOT"
