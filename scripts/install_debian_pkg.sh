@@ -17,9 +17,10 @@ run() {
     log "I: Running command: %s" "$*"
     "$@"
 }
-echo "auth: $AUTH"
+
 if [ x$AUTH == "xinit" ];then
 	run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $TARGET_DIR -m $MIRROR -p "$PKG" -s $SUITE
+	echo "deb [arch=$ARCH] $MIRROR $SUITE main" > $TARGET_DIR/etc/apt/sources.list.d/multistrap-debian.list
 else
 	run $SCRIPTS_DIR/multistrap_build.sh -a $ARCH -b $SCRIPTS_DIR/debconfseed.txt -c $SCRIPTS_DIR/multistrap.conf -d $TARGET_DIR -m $MIRROR -p "$PKG" -s $SUITE -u "--no-auth"
 fi
