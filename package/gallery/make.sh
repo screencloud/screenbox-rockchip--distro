@@ -10,6 +10,7 @@ $QMAKE $TOP_DIR/app/$PKG
 make
 mkdir -p $TARGET_DIR/usr/local/$PKG
 cp $TOP_DIR/app/$PKG/conf/* $TARGET_DIR/usr/local/$PKG/
+install -m 0644 -D $TOP_DIR/app/$PKG/gallery.desktop $TARGET_DIR/usr/share/applications/
 install -m 0755 -D $BUILD_DIR/$PKG/galleryView $TARGET_DIR/usr/local/$PKG/galleryView
 cd -
 
