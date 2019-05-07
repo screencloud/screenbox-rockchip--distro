@@ -1,6 +1,7 @@
 menu "Target packages"
 	source "package/QLauncher/Config.in"
 	source "package/alsa-config/Config.in"
+	source "package/audioservice/Config.in"
 	source "package/busybox/Config.in"
 	source "package/camera_engine_rkisp/Config.in"
 	source "package/libdrm/Config.in"

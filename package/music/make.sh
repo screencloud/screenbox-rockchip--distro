@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-DEPENDENCIES="gstreamer weston libqt5widgets5 libatomic1 qtwayland5 libqt5multimedia5"
+DEPENDENCIES="gstreamer weston libqt5widgets5 libatomic1 qtwayland5 libqt5multimedia5 audioservice"
 $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 PKG=music
 #QMAKE=/usr/bin/qmake
