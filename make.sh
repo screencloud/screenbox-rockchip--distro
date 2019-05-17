@@ -189,7 +189,12 @@ main()
 		exit 0
 	else
 		init
-		$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $1
+		p=$1
+		if [ x"-rebuild" == x`echo ${p:0-8:8}` ];then
+			p=`echo ${p%%-*}`
+			rm -rf $BUILD_DIR/$p
+		fi
+		$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $p
 		exit 0
 	fi
 }
