@@ -5,7 +5,7 @@ DEPENDENCIES="gst-plugins-bad gst-plugins-rockchip weston libqt5widgets5 libatom
 $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 PKG=camera
 #QMAKE=/usr/bin/qmake
-QMAKE=$TOP_DIR/buildroot/output/rockchip_rk3399/host/bin/qmake
+QMAKE=$TOP_DIR/buildroot/output/$RK_CFG_BUILDROOT/host/bin/qmake
 mkdir -p $BUILD_DIR/$PKG
 cd $BUILD_DIR/$PKG
 $QMAKE $TOP_DIR/app/$PKG

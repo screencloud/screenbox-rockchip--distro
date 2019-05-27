@@ -5,7 +5,7 @@ PKG=settings
 DEPENDENCIES="weston libqt5widgets5 libatomic1 qtwayland5 libqt5bluetooth5 libqt5sql5"
 $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 #QMAKE=/usr/bin/qmake
-QMAKE=$TOP_DIR/buildroot/output/rockchip_rk3399/host/bin/qmake
+QMAKE=$TOP_DIR/buildroot/output/$RK_CFG_BUILDROOT/host/bin/qmake
 mkdir -p $BUILD_DIR/$PKG
 cd $BUILD_DIR/$PKG
 $QMAKE $TOP_DIR/app/$PKG
