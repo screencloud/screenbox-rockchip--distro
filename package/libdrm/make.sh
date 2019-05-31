@@ -1,6 +1,8 @@
 #!/bin/bash
 
 set -e
+DEPENDENCIES="libdrm-dev"
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 PKG=libdrm
 mkdir -p $BUILD_DIR/$PKG
 cd $BUILD_DIR/$PKG
