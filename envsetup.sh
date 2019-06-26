@@ -16,6 +16,7 @@ export OVERLAY_DIR=$DISTRO_DIR/overlay
 export MOUNT_DIR=$TARGET_DIR/sdk
 export BUILDROOT_DIR=$TOP_DIR/buildroot
 export BUILDROOT_PKG_DIR=$BUILDROOT_DIR/package
+export OVERRIDE_PKG_DIR=$DISTRO_DIR/package/override
 
 if [ $RK_ARCH == arm64 ];then
 	export TOOLCHAIN_DIR=$TOP_DIR/prebuilts/gcc/linux-x86/aarch64/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu

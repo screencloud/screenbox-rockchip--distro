@@ -170,6 +170,7 @@ build_all()
 	init $1
 	build_base
 	build_packages
+	$SCRIPTS_DIR/override_deb.sh
 	run rsync -a --ignore-times --keep-dirlinks --chmod=u=rwX,go=rX --exclude .empty $OVERLAY_DIR/ $TARGET_DIR/
 	pack
 }
