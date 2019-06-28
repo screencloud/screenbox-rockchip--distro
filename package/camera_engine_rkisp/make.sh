@@ -14,7 +14,7 @@ mkdir -p $RKawbDir
 mkdir -p $TARGET_DIR/etc/iqfiles
 
 cd $TOP_DIR/external/$PKG
-make ARCH=$ARCH OUTDIR=$BUILD_DIR/$PKG/build
+make ARCH=$ARCH OUTDIR=$BUILD_DIR/$PKG/build -j$RK_JOBS
 install -D -m 755 $BUILD_DIR/$PKG/build/bin/rkisp_demo $TARGET_DIR/usr/local/bin/
 install -D -m 644 $TOP_DIR/external/$PKG/iqfiles/*.xml $TARGET_DIR/etc/iqfiles/
 install -D -m 644 $BUILD_DIR/$PKG/build/lib/librkisp.so $TARGET_DIR/usr/lib/

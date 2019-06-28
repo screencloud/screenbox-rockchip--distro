@@ -9,7 +9,7 @@ QMAKE=$TOP_DIR/buildroot/output/$RK_CFG_BUILDROOT/host/bin/qmake
 mkdir -p $BUILD_DIR/$PKG
 cd $BUILD_DIR/$PKG
 $QMAKE $TOP_DIR/app/$PKG
-make
+make -j$RK_JOBS
 mkdir -p $TARGET_DIR/usr/local/$PKG
 cp $TOP_DIR/app/$PKG/conf/* $TARGET_DIR/usr/local/$PKG/
 mkdir -p $TARGET_DIR/usr/share/applications

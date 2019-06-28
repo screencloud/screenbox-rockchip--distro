@@ -23,7 +23,7 @@ rm -f $TARGET_DIR/bin/mountpoint
 cd $BUILD_DIR/$PKG
 make oldconfig
 /bin/sed -i -e 's/^noclobber="0"$/noclobber="1"/' $BUILD_DIR/$PKG/applets/install.sh
-make
+make -j$RK_JOBS
 make CONFIG_PREFIX="$TARGET_DIR" install
 cd -
 

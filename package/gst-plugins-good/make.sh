@@ -483,7 +483,7 @@ fi
 $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 echo "opts: $OPTS"
 ./configure $OPTS
-make
+make -j$RK_JOBS
 make install
 $SCRIPTS_DIR/fixlibtool.sh $TARGET_DIR $TARGET_DIR
 cd -

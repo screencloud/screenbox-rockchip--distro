@@ -6,6 +6,6 @@ $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 mkdir -p $BUILD_DIR/gst-plugins-rockchip
 cd $BUILD_DIR/gst-plugins-rockchip
 $TOP_DIR/external/gst-plugins-rockchip/autogen.sh  --prefix=/usr --libdir=/usr/lib/$TOOLCHAIN --host=aarch64-linux-gnu
-make
+make -j$RK_JOBS
 make install
 cd -
