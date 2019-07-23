@@ -282,6 +282,12 @@ else
 fi
 $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 echo "opts: $OPTS"
+if [ -d $DISTRO_DIR/package/$PKG/$VERSION ]; then
+	for p in $(ls $DISTRO_DIR/package/$PKG/$VERSION/*.patch); do
+		echo "apply patch: "$p
+		patch -p1 < $p;
+	done
+fi
 ./configure $OPTS
 make -j$RK_JOBS
 make install
