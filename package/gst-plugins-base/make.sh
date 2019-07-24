@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-DEPENDENCIES="libdrm-dev libwayland-client0 gstreamer"
+DEPENDENCIES="libdrm libwayland-dev wayland-protocols libwayland-client0 gstreamer"
 PKG=gst-plugins-base
 VERSION=1.14.4
 source $OUTPUT_DIR/.config
