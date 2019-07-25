@@ -12,7 +12,7 @@ cd $BUILD_DIR/$PKG
 $QMAKE $TOP_DIR/app/$PKG
 make -j$RK_JOBS
 mkdir -p $TARGET_DIR/usr/share/backgrounds
-cp $TOP_DIR/app/QLauncher/resources/images/background.jpg $TARGET_DIR/usr/share/backgrounds/
+cp $TOP_DIR/app/QLauncher/resources/background.jpg $TARGET_DIR/usr/share/backgrounds/
 install -m 0755 -D $BUILD_DIR/$PKG/$PKG $TARGET_DIR/usr/bin/$PKG
 install -m 0755 -D $PACKAGE_DIR/$PKG/S50launcher $TARGET_DIR/etc/init.d/S50launcher
 cd -
