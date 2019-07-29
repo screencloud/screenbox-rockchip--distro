@@ -149,6 +149,29 @@ build_packages()
 	echo "finish building all packages"
 }
 
+install_deb_dependies()
+{
+	local install_pkgs
+
+	for p in $(ls $DISTRO_DIR/package/); do
+		[ -f $DISTRO_DIR/package/$p/make.sh ] || continue
+		dependencies=`grep DEPENDENCIES= $DISTRO_DIR/package/$p/make.sh| head -1 | cut -d '=' -f 2 | tr -d '"'`
+		install_pkgs+=' '$dependencies
+	done
+
+	for p in $(ls $DISTRO_DIR/package/); do
+		[ -f $DISTRO_DIR/package/$p/make.sh ] || continue
+
+		# ${str/substr/} can't handle this scenario:
+		# pkg: gstreamer gstreamer-rockchip
+		# without -->p=' '$p' ', the output will be -rockchip.
+		p=' '$p' '
+		install_pkgs=${install_pkgs//$p/' '}
+	done
+	echo "dependencies package are:"$install_pkgs
+	$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$install_pkgs"
+}
+
 init()
 {
 	mkdir -p $OUTPUT_DIR $BUILD_DIR $TARGET_DIR $IMAGE_DIR $MOUNT_DIR $SYSROOT_DIR $TARGET_DIR/etc/apt/sources.list.d
@@ -169,6 +192,7 @@ build_all()
 {
 	init $1
 	build_base
+	install_deb_dependies
 	build_packages
 	$SCRIPTS_DIR/override_deb.sh
 	run rsync -a --ignore-times --keep-dirlinks --chmod=u=rwX,go=rX --exclude .empty $OVERLAY_DIR/ $TARGET_DIR/
