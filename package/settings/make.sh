@@ -15,6 +15,7 @@ cp $TOP_DIR/app/$PKG/conf/icon_setting.png $TARGET_DIR/usr/share/icon/
 mkdir -p $TARGET_DIR/usr/share/applications
 install -m 0644 -D $TOP_DIR/app/$PKG/setting.desktop $TARGET_DIR/usr/share/applications/
 install -m 0755 -D $BUILD_DIR/$PKG/settings $TARGET_DIR/usr/bin/settings
+install -m 0755 -D $DISTRO_DIR/package/$PKG/S30dbus $TARGET_DIR/etc/init.d/S30dbus
 ln -sf /sbin/wpa_supplicant $TARGET_DIR/usr/sbin/wpa_supplicant
 cd -
 
