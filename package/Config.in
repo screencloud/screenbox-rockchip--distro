@@ -25,5 +25,6 @@ menu "Target packages"
 	source "package/rkwifibt/Config.in"
 	source "package/settings/Config.in"
 	source "package/qplayer/Config.in"
+	source "package/qfm/Config.in"
 	source "package/weston/Config.in"
 endmenu
