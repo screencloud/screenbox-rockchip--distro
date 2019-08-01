@@ -13,6 +13,9 @@ case "$1" in
 
 		export QT_GSTREAMER_WINDOW_VIDEOSINK=waylandsink
 
+		# for bt service
+		/usr/sbin/bluetoothd --compat &
+
 		#for QLauncher wayland
 		mkdir -p /tmp/.xdg &&  chmod 0700 /tmp/.xdg
 		export XDG_RUNTIME_DIR=/tmp/.xdg
