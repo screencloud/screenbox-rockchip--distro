@@ -24,6 +24,6 @@ menu "Target packages"
 	source "package/rkscript/Config.in"
 	source "package/rkwifibt/Config.in"
 	source "package/settings/Config.in"
-	source "package/video/Config.in"
+	source "package/qplayer/Config.in"
 	source "package/weston/Config.in"
 endmenu
