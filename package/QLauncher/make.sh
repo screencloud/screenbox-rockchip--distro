@@ -2,7 +2,7 @@
 
 set -e
 PKG=QLauncher
-DEPENDENCIES="weston libqt5widgets5 libatomic1 qtwayland5 qtquickcontrols2-5-dev qml-module-qt-labs-settings qml-module-qtquick-controls"
+DEPENDENCIES="weston libqt5widgets5 libatomic1 qtwayland5"
 $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 #QMAKE=/usr/bin/qmake
 QMAKE=$TOP_DIR/buildroot/output/$RK_CFG_BUILDROOT/host/bin/qmake
