@@ -943,6 +943,7 @@ if [ -d $DISTRO_DIR/package/$PKG/$VERSION ]; then
 		patch -p1 < $p;
 	done
 fi
+autoreconf -i
 ./configure $OPTS
 make -j$RK_JOBS
 make install
