@@ -14,6 +14,7 @@ mkdir -p $TARGET_DIR/usr/share/icon
 cp $TOP_DIR/app/$PKG/image/icon_folder.png $TARGET_DIR/usr/share/icon/
 mkdir -p $TARGET_DIR/usr/share/applications
 install -m 0644 -D $TOP_DIR/app/$PKG/qfm.desktop $TARGET_DIR/usr/share/applications/
+install -m 0644 -D $TOP_DIR/app/$PKG/mimeapps.list $TARGET_DIR/usr/share/applications/
 install -m 0755 -D $BUILD_DIR/$PKG/qfm $TARGET_DIR/usr/bin/qfm
 cd -
 
