@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-DEPENDENCIES="gst-plugins-bad gst-plugins-rockchip weston libqt5widgets5 libatomic1 qtwayland5 libqt5multimedia5 libqgsttools"
+DEPENDENCIES="gst-plugins-bad gst-plugins-good weston libqt5widgets5 libatomic1 qtwayland5 libqt5multimedia5 libqgsttools"
 $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 PKG=camera
 #QMAKE=/usr/bin/qmake
