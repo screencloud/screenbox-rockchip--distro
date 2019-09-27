@@ -15,7 +15,7 @@ if [ ! -d $BUILD_DIR/$PKG/$PKG-$VERSION ];then
 fi
 
 cd $BUILD_DIR/$PKG
-OPTS="--host=aarch64-linux-gnu --prefix=/usr --libdir=/usr/lib/$TOOLCHAIN --disable-gtk-doc --disable-gtk-doc-html --disable-dependency-tracking --disable-nls --disable-static --enable-shared  --disable-examples --disable-valgrind"
+OPTS="--target=aarch64-linux-gnu --host=aarch64-linux-gnu --prefix=/usr --libdir=/usr/lib/$TOOLCHAIN --disable-gtk-doc --disable-gtk-doc-html --disable-dependency-tracking --disable-nls --disable-static --enable-shared  --disable-examples --disable-valgrind"
 
 if [ x$BR2_PACKAGE_GST_PLUGINS_BAD_IPA = xy ];then
 	OPTS="$OPTS --enable-iqa"
