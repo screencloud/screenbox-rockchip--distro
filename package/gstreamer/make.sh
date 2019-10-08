@@ -15,8 +15,7 @@ if [ ! -d $BUILD_DIR/$PKG/$PKG-$VERSION ];then
 fi
 
 cd $BUILD_DIR/$PKG
-./configure --host=aarch64-linux-gnu --prefix=/usr --libdir=/usr/lib/$TOOLCHAIN --disable-gtk-doc --disable-gtk-doc-html --disable-dependency-tracking --disable-nls --disable-static --enable-shared  --disable-examples --disable-tests --disable-failing-tests --disable-valgrind --disable-benchmarks --disable-introspection --disable-check
+./configure --target=aarch64-linux-gnu --host=aarch64-linux-gnu --prefix=/usr --libdir=/usr/lib/$TOOLCHAIN --program-prefix= --disable-gtk-doc --disable-gtk-doc-html --disable-dependency-tracking --disable-nls --disable-static --enable-shared  --disable-examples --disable-tests --disable-failing-tests --disable-valgrind --disable-benchmarks --disable-introspection --disable-check
 make -j$RK_JOBS
 make install
 $SCRIPTS_DIR/fixlibtool.sh $TARGET_DIR $TARGET_DIR
-cd -
