@@ -22,5 +22,6 @@ menu "Target packages"
 	source "package/qcamera/Config.in"
 	source "package/qplayer/Config.in"
 	source "package/qfm/Config.in"
+	source "package/qsetting/Config.in"
 	source "package/weston/Config.in"
 endmenu
