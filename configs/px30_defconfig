@@ -1,6 +1,7 @@
 #include "audio.config"
 #include "base.install"
 #include "base.config"
+#include "camera.config"
 #include "debug.install"
 #include "gpu.config"
 #include "graphics.config"
