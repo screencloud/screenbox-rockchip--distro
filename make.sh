@@ -210,8 +210,11 @@ main()
 		init
 		build_base
 		exit 0
-	elif [ -z $1 ] || [ x$1 == xdefault ];then
-		build_all $1
+	elif [ x$1 == xmirror ] && [ -n $2 ];then
+		echo $2 > $OUTPUT_DIR/.mirror
+		exit 0
+	elif [ -z $1 ];then
+		build_all
 		exit 0
 	else
 		init

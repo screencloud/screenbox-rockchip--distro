@@ -19,8 +19,8 @@ run() {
 
 if [ ! -e $OUTPUT_DIR/.mirror ];then
 	echo "find the fastest mirror"
-#	export MIRROR=`$SCRIPTS_DIR/get_mirror.sh $SUITE $ARCH default`
-	export MIRROR=`$SCRIPTS_DIR/get_mirror.sh $SUITE $ARCH`
+	export MIRROR=`$SCRIPTS_DIR/get_mirror.sh $SUITE $ARCH default`
+#	export MIRROR=`$SCRIPTS_DIR/get_mirror.sh $SUITE $ARCH`
 	echo $MIRROR > $OUTPUT_DIR/.mirror
 else
 	export MIRROR=`cat $OUTPUT_DIR/.mirror`
