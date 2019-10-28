@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-DEPENDENCIES=libglib2.0-dev
+DEPENDENCIES="libglib2.0-dev libgstreamer1.0-0"
 $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 PKG=gstreamer
 VERSION=1.14.4
