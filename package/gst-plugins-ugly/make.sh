@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-DEPENDENCIES=gst-plugins-base
+DEPENDENCIES="gst-plugins-base libmpeg2-4-dev"
 PKG=gst-plugins-ugly
 VERSION=1.14.4
 source $OUTPUT_DIR/.config
