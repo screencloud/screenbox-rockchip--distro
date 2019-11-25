@@ -89,6 +89,7 @@ done < $CONF
 echo "I: create $MULTISTRAPCONF done"
 # download and extract packages
 echo "I: run multistrap" >&2
+export PROOT_NO_SECCOMP=1
 run proot -0 multistrap $NOAUTH $MSTRAP_SIM -f "$MULTISTRAPCONF"
 [ -z "$MSTRAP_SIM" ] || exit 0
 # preseed debconf
