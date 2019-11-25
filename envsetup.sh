@@ -48,4 +48,5 @@ export DESTDIR="$TARGET_DIR"
 export PREFIX="$TARGET_DIR"
 export CFLAGS="-I$SYSROOT_DIR/usr/include -I$SYSROOT_DIR/usr/include/$TOOLCHAIN -I$TARGET_DIR/usr/include -I$TARGET_DIR/usr/include/$TOOLCHAIN --sysroot=$SYSROOT_DIR"
 export CXXFLAGS=$CFLAGS
+export CCFLAGS=$CFLAGS
 export LDFLAGS="--sysroot=$TARGET_DIR -Wl,-rpath-link,$TARGET_DIR/lib:$TARGET_DIR/usr/lib:$TARGET_DIR/lib/$TOOLCHAIN:$TARGET_DIR/usr/lib:$TARGET_DIR/usr/lib/$TOOLCHAIN -L$TARGET_DIR/usr/lib"
