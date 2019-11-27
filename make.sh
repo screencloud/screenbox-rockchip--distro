@@ -59,7 +59,7 @@ pack_ext4()
 	SIZE=$[SIZE+EXTRA_SIZE]
 	run genext2fs -b $SIZE -N $inode_counti -d $SRC $DST
 	run tune2fs -O dir_index,filetype $DST
-	run e2fsck -fy $DST > /dev/null
+	e2fsck -fy $DST > /dev/null
 #	if [ -x $DISTRO_DIR/../device/rockchip/common/mke2img.sh ];then
 #		$DISTRO_DIR/../device/rockchip/common/mke2img.sh $SRC $DST
 #	fi
