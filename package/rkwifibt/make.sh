@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 set -e
 DEPENDENCIES="wpasupplicant dhcpcd5 ntp ntpdate"
@@ -7,6 +7,7 @@ source $OUTPUT_DIR/.config
 mkdir -p $BUILD_DIR/rkwifibt/realtek/rtk_hciattach
 cp -r $TOP_DIR/external/rkwifibt/realtek/rtk_hciattach $BUILD_DIR/rkwifibt/realtek/
 cp -r $TOP_DIR/external/rkwifibt/realtek/bluetooth_uart_driver $BUILD_DIR/rkwifibt/realtek/
+mkdir -p $TARGET_DIR/system/lib/modules $TARGET_DIR/system/etc/firmware $TARGET_DIR/lib/firmware $TARGET_DIR/usr/lib/modules $TARGET_DIR/lib/firmware/rtlbt
 BT_TTY=ttyS0
 echo "BR2_PACKAGE_RKWIFIBT_BTUART:$BR2_PACKAGE_RKWIFIBT_BTUART"
 if [ -n $BR2_PACKAGE_RKWIFIBT_BTUART ];then
@@ -22,7 +23,6 @@ fi
 }
 
 function install_common(){
-mkdir -p $TARGET_DIR/system/lib/modules $TARGET_DIR/system/etc/firmware $TARGET_DIR/lib/firmware $TARGET_DIR/usr/lib/modules $TARGET_DIR/lib/firmware/rtlbt
 install -m 0755 -D $TOP_DIR/external/rkwifibt/wpa_supplicant.conf $TARGET_DIR/etc/
 install -m 0755 -D $TOP_DIR/external/rkwifibt/dnsmasq.conf $TARGET_DIR/etc/
 install -m 0755 -D $TOP_DIR/external/rkwifibt/wifi_start.sh $TARGET_DIR/usr/bin/
