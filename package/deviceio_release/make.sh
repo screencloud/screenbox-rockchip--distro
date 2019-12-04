@@ -21,9 +21,9 @@ if [ $BR2_PACKAGE_RKWIFIBT_VENDOR = "ROCKCHIP" ];then
 	DEVICEIO_BSA=fake
 fi
 echo "$DEPENDENCIES"
-DEPENDENCIES+=" wpasupplicant alsa-lib libwpa_client"
+DEPENDENCIES+=" wpasupplicant libasound2-dev libwpa_client"
 echo "$DEPENDENCIES"
-$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE $DEPENDENCIES
+$SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 
 if [ $RK_ARCH = arm64 ];then
 	DEVICEIOARCH=lib64
