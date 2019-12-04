@@ -71,4 +71,5 @@ elif [ $RK_TARGET_PRODUCT = rk3326 ] || [ $RK_TARGET_PRODUCT == px30 ];then
 	fi
 fi
 link_opengl
+ln -s libmali.so libmali.so.1
 cd -
