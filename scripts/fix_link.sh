@@ -27,7 +27,7 @@ simplify_symlink() {
 			continue ;
 		fi ;
 		relpath="$(relpath_prefix ${target})" ;
-		echo "Fixing symlink ${link} from ${target} to ${relpath}" ;
+#		echo "Fixing symlink ${link} from ${target} to ${relpath}" ;
 		ln -sf ${relpath} ${link} ;
 	done ;
 }
