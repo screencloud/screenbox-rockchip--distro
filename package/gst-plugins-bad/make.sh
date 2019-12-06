@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-DEPENDENCIES=gst-plugins-base
+DEPENDENCIES="gst-plugins-base"
 PKG=gst-plugins-bad
 VERSION=1.14.4
 source $OUTPUT_DIR/.config
@@ -668,6 +668,7 @@ fi
 
 if [ x$BR2_PACKAGE_GST_PLUGINS_BAD_KMS = xy ];then
 	OPTS="$OPTS --enable-kms"
+	DEPENDENCIES="$DEPENDENCIES libdrm"
 else
 	OPTS="$OPTS --disable-kms"
 fi
