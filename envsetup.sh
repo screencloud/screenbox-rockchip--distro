@@ -11,6 +11,7 @@ export SYSROOT_DIR=$OUTPUT_DIR/target
 export CONFIGS_DIR=$DISTRO_DIR/configs
 export PACKAGE_DIR=$DISTRO_DIR/package
 export DOWNLOAD_DIR=$DISTRO_DIR/download
+export CACHE_DIR=$DISTRO_DIR/cache
 export SCRIPTS_DIR=$DISTRO_DIR/scripts
 export OVERLAY_DIR=$DISTRO_DIR/overlay
 export MOUNT_DIR=$TARGET_DIR/sdk

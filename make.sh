@@ -174,7 +174,8 @@ install_deb_dependies()
 
 init()
 {
-	mkdir -p $OUTPUT_DIR $BUILD_DIR $TARGET_DIR $IMAGE_DIR $MOUNT_DIR $SYSROOT_DIR $TARGET_DIR/etc/apt/sources.list.d
+	mkdir -p $OUTPUT_DIR $BUILD_DIR $TARGET_DIR $IMAGE_DIR $MOUNT_DIR $SYSROOT_DIR $CACHE_DIR
+	mkdir -p $TARGET_DIR/etc/apt/sources.list.d $TARGET_DIR/var/cache/apt/archives
 
 	if [ -z $ARCH ];then
 		export ARCH=arm64
