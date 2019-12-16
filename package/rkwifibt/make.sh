@@ -14,12 +14,14 @@ if [ -n $BR2_PACKAGE_RKWIFIBT_BTUART ];then
         BT_TTY=$BR2_PACKAGE_RKWIFIBT_BTUART
 fi
 
-function build_kernel(){
+function build_rkwifibt(){
 if [ -e $TOP_DIR/build.sh ];then
-	export LDFLAGS="--sysroot=$SYSROOT"
-	$TOP_DIR/build.sh modules
+export LDFLAGS="--sysroot=$SYSROOT"
+$TOP_DIR/build.sh modules
 find $TOP_DIR/kernel/drivers/net/wireless/rockchip_wlan/* -name $BR2_PACKAGE_RKWIFIBT_WIFI_KO | xargs -n1 -i cp {} $TARGET_DIR/system/lib/modules/
 fi
+
+$GCC $TOP_DIR/external/rkwifibt/src/rk_wifi_init.c -o $TARGET_DIR/usr/bin/rk_wifi_init
 }
 
 function install_common(){
@@ -29,14 +31,12 @@ install -m 0755 -D $TOP_DIR/external/rkwifibt/wifi_start.sh $TARGET_DIR/usr/bin/
 }
 
 function install_broadcom(){
-	build_kernel
+	build_rkwifibt
 	install_common
 	$GCC $TOP_DIR/external/rkwifibt/brcm_tools/brcm_patchram_plus1.c -o $TARGET_DIR/usr/bin/brcm_patchram_plus1
 	$GCC $TOP_DIR/external/rkwifibt/brcm_tools/dhd_priv.c -o $TARGET_DIR/usr/bin/dhd_priv
-	$GCC $TOP_DIR/external/rkwifibt/src/rk_wifi_init.c -o $TARGET_DIR/usr/bin/rk_wifi_init
 	install -m 0755 -D $TOP_DIR/external/rkwifibt/S66load_wifi_modules $TARGET_DIR/etc/init.d/
 	sed -i "s/BT_TTY_DEV/\/dev\/$BT_TTY/g" $TARGET_DIR/etc/init.d/S66load_wifi_modules
-	sed -i "/load wifi modules/a\\  \   insmod \/system\/lib\/modules\/$BR2_PACKAGE_RKWIFIBT_WIFI_KO" $TARGET_DIR/etc/init.d/S66load_wifi_modules
 	install -m 0644 -D $TOP_DIR/external/rkwifibt/firmware/broadcom/$BR2_PACKAGE_RKWIFIBT_CHIPNAME/wifi/* $TARGET_DIR/system/etc/firmware/
 	install -m 0755 -D $TOP_DIR/external/rkwifibt/bin/$RK_ARCH/* $TARGET_DIR/usr/bin/
 
@@ -49,7 +49,7 @@ function install_broadcom(){
 }
 
 function install_realtek(){
-        build_kernel
+        build_rkwifibt
         install_common
 	make -C $BUILD_DIR/rkwifibt/realtek/rtk_hciattach/ CC=$GCC
 	make -C $TOP_DIR/kernel/ M=$BUILD_DIR/rkwifibt/realtek/bluetooth_uart_driver ARCH=$RK_ARCH CROSS_COMPILE=$CROSS_COMPILE
