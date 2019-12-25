@@ -9,11 +9,14 @@ export PATH=$PATH:/usr/sbin:/sbin
 export PROOT_NO_SECCOMP=1
 if [ $ARCH == arm64 ];then
         QEMU_ARCH=aarch64
+        DEB_SOURCE_ARCH=arm64
 elif [ $ARCH == arm ];then
         QEMU_ARCH=arm
+        DEB_SOURCE_ARCH=armhf
 else
         echo "$ARCH is not a valid arch. we only support arm and arm64! set to arm64"
         QEMU_ARCH=aarch64
+        DEB_SOURCE_ARCH=arm64
 fi
 
 CHROOTQEMUCMD="proot -q qemu-$QEMU_ARCH-static -v -1 -0 -b /dev -b /sys -b /proc -r"
@@ -26,7 +29,7 @@ else
 fi
 
 echo "[General]" > $OUTPUT_DIR/multistrap.conf
-echo "arch=$ARCH" >> $OUTPUT_DIR/multistrap.conf
+echo "arch=$DEB_SOURCE_ARCH" >> $OUTPUT_DIR/multistrap.conf
 echo "directory=$TARGET_DIR" >> $OUTPUT_DIR/multistrap.conf
 echo "cleanup=true" >> $OUTPUT_DIR/multistrap.conf
 echo "unpack=true" >> $OUTPUT_DIR/multistrap.conf
