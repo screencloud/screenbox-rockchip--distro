@@ -25,6 +25,11 @@ install -m 0755 -D $TOP_DIR/external/rkscript/resize-helper $TARGET_DIR/usr/sbin
 install -m 0755 -D $TOP_DIR/external/rkscript/S22resize-disk $TARGET_DIR/etc/init.d/
 echo -e "/dev/disk/by-partlabel/oem\t/oem\t\t\t$RK_OEM_FS_TYPE\t\tdefaults\t\t0\t2" >> $TARGET_DIR/etc/fstab
 echo -e "/dev/disk/by-partlabel/userdata\t/userdata\t\t$RK_USERDATA_FS_TYPE\t\tdefaults\t\t0\t2" >> $TARGET_DIR/etc/fstab
+if [ "$BR2_PACKAGE_RKSCRIPT_DEFAULT_PCM" != "none" ];then
+	echo "change default PCM $BR2_PACKAGE_RKSCRIPT_DEFAULT_PCM "
+	install -m 0644 -D $TOP_DIR/external/rkscript/asound.conf.in $TARGET_DIR/etc/asound.conf
+	sed -i "s#\#PCM_ID#${BR2_PACKAGE_RKSCRIPT_DEFAULT_PCM}#g" $TARGET_DIR/etc/asound.conf
+fi
 mkdir -p $TARGET_DIR/oem $TARGET_DIR/userdata $TARGET_DIR/mnt/sdcard
 cd $TARGET_DIR/
 ln -fs userdata data

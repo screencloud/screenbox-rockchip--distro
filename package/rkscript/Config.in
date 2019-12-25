@@ -16,3 +16,9 @@ config BR2_PACKAGE_RKSCRIPT_ADBD
         help
           android adbd config
 
+config BR2_PACKAGE_RKSCRIPT_DEFAULT_PCM
+	string "PCM default"
+	default "none"
+	depends on BR2_PACKAGE_RKSCRIPT
+	help
+		PCM default
