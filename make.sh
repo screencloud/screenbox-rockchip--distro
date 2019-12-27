@@ -65,71 +65,9 @@ pack_ext4()
 #	fi
 }
 
-target_clean()
-{
-	system=$1
-	for pkg in $(cat $DISTRO_DIR/configs/build.config)
-	do
-		if [ x$pkg != x`grep $pkg $DISTRO_CONFIG` ];then
-			sudo chroot $system apt-get remove -y $pkg
-		fi
-	done
-
-	sudo chroot $system apt-get autoclean -y
-	sudo chroot $system apt-get clean -y
-	sudo chroot $system apt-get autoremove -y
-	sudo rm -rf $system/usr/share/locale/*
-	sudo rm -rf $system/usr/share/man/*
-	sudo rm -rf $system/usr/share/doc/*
-	sudo rm -rf $system/usr/include/*
-	sudo rm -rf $system/var/log/*
-	sudo rm -rf $system/var/lib/apt/lists/*
-	sudo rm -rf $system/var/cache/*
-	echo "remove unused dri..."
-	if [ $DISTRO_ARCH = arm64 ];then
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/msm_dri.so
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/nouveau_dri.so
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/nouveau_drv_video.so
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/nouveau_vieux_dri.so
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/r200_dri.so
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/r300_dri.so
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/r600_dri.so
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/r600_drv_video.so
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/radeon_dri.so
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/radeonsi_dri.so
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/radeonsi_drv_video.so
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/tegra_dri.so
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/dri/vc4_dri.so
-	elif [ $DISTRO_ARCH = arm ];then
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/msm_dri.so
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/nouveau_dri.so
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/nouveau_drv_video.so
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/nouveau_vieux_dri.so
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/r200_dri.so
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/r300_dri.so
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/r600_dri.so
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/r600_drv_video.so
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/radeon_dri.so
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/radeonsi_dri.so
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/radeonsi_drv_video.so
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/tegra_dri.so
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/dri/vc4_dri.so
-	fi
-	echo "remove vdpau..."
-	if [ $DISTRO_ARCH = arm64 ];then
-		sudo rm -rf $system/usr/lib/aarch64-linux-gnu/vdpau
-	elif [ $DISTRO_ARCH = arm ];then
-		sudo rm -rf $system/usr/lib/arm-linux-gnueabihf/vdpau
-	fi
-	sudo rm -rf $system/sdk
-}
-
 pack()
 {
 	echo "packing rootfs image..."
-#	rm -rf $ROOTFS_DIR
-#	cp -ar $TARGET_DIR $ROOTFS_DIR
-#	target_clean $ROOTFS_DIR
 	if [ $RK_ROOTFS_TYPE = ext4 ];then
 		pack_ext4 $TARGET_DIR $ROOTFS_EXT4
 	elif [ $RK_ROOTFS_TYPE = squashfs ];then
