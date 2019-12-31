@@ -30,7 +30,6 @@ else
 		fi
 
         	if [ -x $PACKAGE_DIR/$p/make.sh ];then
-			echo "building package $p"
 			mkdir -p $BUILD_DIR/$p
                 	run $PACKAGE_DIR/$p/make.sh
 			touch $BUILD_DIR/$p/.timestamp
