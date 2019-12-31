@@ -18,7 +18,7 @@ fi
 cp $PACKAGE_DIR/$PKG/defconfig $BUILD_DIR/$PKG/wpa_supplicant/.config
 cd $BUILD_DIR/$PKG/wpa_supplicant
 make -j$RK_JOBS
-make LIBDIR="/usr/lib" INCDIR="/usr/include" install
+make LIBDIR="/usr/lib/$TOOLCHAIN" INCDIR="/usr/include" install
 cd -
 
 
