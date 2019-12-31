@@ -19,7 +19,6 @@ run() {
 
 OS=`$SCRIPTS_DIR/get_distro.sh $SUITE`
 pkgs=""
-echo "installing package $PKGS"
 for p in $PKGS;do
 	if [ -e $BUILD_DIR/$p/.timestamp ];then
 		if [ -z `find $BUILD_DIR/$p -newer $BUILD_DIR/$p/.timestamp` ];then
@@ -54,4 +53,3 @@ for p in $pkgs;do
 	touch $BUILD_DIR/$p/.timestamp
 done
 
-echo "install $pkgs done!!!"
