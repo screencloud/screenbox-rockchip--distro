@@ -4,7 +4,6 @@ ARCH=$1
 SUITE=$2
 PACKAGES="$3"
 AUTH=$4
-set -e
 export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C
 export PATH=$PATH:/usr/sbin:/sbin
 export PROOT_NO_SECCOMP=1
@@ -46,7 +45,7 @@ echo "omitdebsrc=true" >> $OUTPUT_DIR/multistrap.conf
 echo "" >> $OUTPUT_DIR/multistrap.conf
 
 echo "download and install "$PACKAGES". it will take a while. log will be saved in $OUTPUT_DIR/log"
-proot -0 multistrap -f $OUTPUT_DIR/multistrap.conf >>$OUTPUT_DIR/log
+proot -0 multistrap -f $OUTPUT_DIR/multistrap.conf >> $OUTPUT_DIR/log
 if [ $? -ne 0 ]; then
 	echo "Failed!!!"
 	tail -n 100 $OUTPUT_DIR/log
@@ -54,11 +53,19 @@ if [ $? -ne 0 ]; then
 else
 	echo "done!"
 fi
-cp $SCRIPTS_DIR/debconfseed.txt $TARGET_DIR/tmp/
-$CHROOTQEMUCMD $TARGET_DIR debconf-set-selections /tmp/debconfseed.txt
 for script in $TARGET_DIR/var/lib/dpkg/info/*.preinst; do
-DPKG_MAINTSCRIPT_NAME=preinst DPKG_MAINTSCRIPT_PACKAGE="`basename $script .preinst`" $CHROOTQEMUCMD $TARGET_DIR ${script##$TARGET_DIR} install
+DPKG_MAINTSCRIPT_NAME=preinst DPKG_MAINTSCRIPT_PACKAGE="`basename $script .preinst`" $CHROOTQEMUCMD $TARGET_DIR ${script##$TARGET_DIR} install >> $OUTPUT_DIR/log
+if [ $? -ne 0 ]; then
+        echo "post install failed!!!"
+        tail -n 100 $OUTPUT_DIR/log
+        exit 1
+fi
 done
-$CHROOTQEMUCMD $TARGET_DIR /usr/bin/dpkg --configure -a
-$SCRIPTS_DIR/fix_link.sh $TARGET_DIR/usr/lib/$TOOLCHAIN
+$CHROOTQEMUCMD $TARGET_DIR /usr/bin/dpkg --configure -a >> $OUTPUT_DIR/log
+if [ $? -ne 0 ]; then
+        echo "dpkg configure failed!!!"
+        tail -n 100 $OUTPUT_DIR/log
+        exit 1
+fi
+$SCRIPTS_DIR/fix_link.sh $TARGET_DIR/usr/lib/$TOOLCHAIN >> $OUTPUT_DIR/log
 
