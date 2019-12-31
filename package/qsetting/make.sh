@@ -9,7 +9,7 @@ QMAKE=$TOP_DIR/buildroot/output/$RK_CFG_BUILDROOT/host/bin/qmake
 mkdir -p $BUILD_DIR/$PKG
 cd $BUILD_DIR/$PKG
 $QMAKE $TOP_DIR/app/$PKG
-make -j$RK_JOBS CXXFLAGS+="-DRKDEVICEIO -I$TOP_DIR/external/deviceio_release/DeviceIO/include -L$TARGET_DIR/usr/lib" LFLAGS+=" -lbsa -lDeviceIo -lasound -L$TARGET_DIR/usr/lib"
+make -j$RK_JOBS CXXFLAGS+="-DRKDEVICEIO -I$TOP_DIR/external/deviceio_release/DeviceIO/include -L$TARGET_DIR/usr/lib" LFLAGS+=" -lbsa -lDeviceIo -lasound -lwpa_client -L$TARGET_DIR/usr/lib"
 mkdir -p $TARGET_DIR/usr/share/icon
 cp $TOP_DIR/app/$PKG/icon_qsetting.png $TARGET_DIR/usr/share/icon/
 mkdir -p $TARGET_DIR/usr/share/applications
