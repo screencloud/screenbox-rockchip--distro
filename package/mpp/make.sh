@@ -6,7 +6,7 @@ $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 mkdir -p $BUILD_DIR/mpp
 rm -f $BUILD_DIR/mpp/CMakeCache.txt
 cd $BUILD_DIR/mpp
-cmake -DRKPLATFORM=ON -DHAVE_DRM=ON -DCMAKE_INSTALL_LIBDIR=/usr/lib/$TOOLCHAIN -DCMAKE_INSTALL_PREFIX=/usr $TOP_DIR/external/mpp
+cmake -DRKPLATFORM=ON -DHAVE_DRM=ON -DCMAKE_TOOLCHAIN_FILE=$DISTRO_DIR/package/mpp/$ARCH.linux.cross.cmake -DCMAKE_INSTALL_LIBDIR=/usr/lib/$TOOLCHAIN -DCMAKE_INSTALL_PREFIX=/usr $TOP_DIR/external/mpp
 make -j$RK_JOBS
 make install
 cd -
