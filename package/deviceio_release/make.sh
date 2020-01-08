@@ -38,8 +38,7 @@ install -m 0755 -D $TOP_DIR/external/deviceio_release/bsa_server.sh $TARGET_DIR/
 install -m 0755 -D $TOP_DIR/external/deviceio_release/$DEVICEIO_BSA/$BSAARCH/libbsa.so $TARGET_DIR/usr/lib/libbsa.so
 install -m 0755 -D $TOP_DIR/external/deviceio_release/$DEVICEIO_BSA/$BSAARCH/app_manager $TARGET_DIR/usr/bin/app_manager
 install -m 0755 -D $TOP_DIR/external/deviceio_release/$DEVICEIO_BSA/$BSAARCH/bsa_server $TARGET_DIR/usr/bin/bsa_server
-install -m 0755 -D $TOP_DIR/external/deviceio_release/$DEVICEIO_BSA/$BSAARCH/libbsa.so $TARGET_DIR/usr/lib/libbsa.so
-install -m 0755 -D $TOP_DIR/external/deviceio_release/DeviceIO/$DEVICEIOARCH/$LIBDEVICEIOSO $TARGET_DIR/usr/lib/libDeviceIo.so
-install -m 0755 -D $TOP_DIR/external/deviceio_release/DeviceIO/$DEVICEIOARCH/$LIBDEVICEIOSO $STAGING_DIR/usr/lib/libDeviceIo.so
+install -m 0755 -D $TOP_DIR/external/deviceio_release/$DEVICEIO_BSA/$BSAARCH/libbsa.so $TARGET_DIR/usr/lib/$TOOLCHAIN/libbsa.so
+install -m 0755 -D $TOP_DIR/external/deviceio_release/DeviceIO/$DEVICEIOARCH/$LIBDEVICEIOSO $TARGET_DIR/usr/lib/$TOOLCHAIN/libDeviceIo.so
 sed -i "s/BT_TTY_DEV/\/dev\/$BT_TTY/g" $TARGET_DIR/usr/bin/bsa_server.sh
 
