@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-DEPENDENCIES="weston libqt5widgets5 libatomic1 qtwayland5 libqt5multimedia5 libqt5multimediawidgets5 camera_engine_rkisp"
+DEPENDENCIES="weston libqt5widgets5 libatomic1 qtwayland5 libqt5multimedia5 libqt5multimediawidgets5"
 $SCRIPTS_DIR/build_pkgs.sh $ARCH $SUITE "$DEPENDENCIES"
 PKG=multicamera
 #QMAKE=/usr/bin/qmake
