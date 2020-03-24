@@ -11,7 +11,8 @@ fi
 
 if [ ! -d $BUILD_DIR/$PKG-$VERSION ];then
 	tar -xf $DOWNLOAD_DIR/$PKG-$VERSION.tar.xz -C $BUILD_DIR/$PKG
-	mv $BUILD_DIR/$PKG/$PKG-$VERSION/* $BUILD_DIR/$PKG/
+	cp $BUILD_DIR/$PKG/$PKG-$VERSION/* $BUILD_DIR/$PKG/ -rf
+	rm $BUILD_DIR/$PKG/$PKG-$VERSION/* -rf
 fi
 
 cd $BUILD_DIR/$PKG
