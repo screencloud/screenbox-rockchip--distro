@@ -19,7 +19,7 @@ OPTS="--target=aarch64-linux-gnu --host=aarch64-linux-gnu --prefix=/usr --libdir
 
 
 if [ x$BR2_PACKAGE_GST_PLUGINS_GOOD_ALPHA = xy ];then
-	OPTS="$OPTS --ebable-alpha"
+	OPTS="$OPTS --enable-alpha"
 else
 	OPTS="$OPTS --disable-alpha"
 fi
