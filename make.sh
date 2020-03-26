@@ -57,7 +57,7 @@ pack_ext4()
 	inode_counti=$[inode_counti+512]
 	EXTRA_SIZE=$[inode_counti*4]
 	SIZE=$[SIZE+EXTRA_SIZE]
-	run genext2fs -b $SIZE -N $inode_counti -d $SRC $DST
+	run genext2fs -U -b $SIZE -N $inode_counti -d $SRC $DST
 	run tune2fs -O dir_index,filetype $DST
 	run e2fsck -fy $DST $> /dev/null || e2fsck $DST
 #	if [ -x $DISTRO_DIR/../device/rockchip/common/mke2img.sh ];then
