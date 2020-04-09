@@ -28,4 +28,5 @@ menu "Target packages"
 	source "package/qfm/Config.in"
 	source "package/qsetting/Config.in"
 	source "package/weston/Config.in"
+	source "package/board/Config.in"
 endmenu

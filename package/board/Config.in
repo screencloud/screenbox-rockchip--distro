@@ -1,0 +1,13 @@
+config BR2_PACKAGE_BOARD
+	bool "Private config for special board"
+	help
+	  "Private config for special board"
+
+if BR2_PACKAGE_BOARD
+
+config BR2_PACKAGE_BOARD_RK3328_EVB
+	bool "RK3328 EVB"
+	help
+	  "RK3328_EVB"
+
+endif
