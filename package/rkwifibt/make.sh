@@ -35,8 +35,8 @@ function install_broadcom(){
 	install_common
 	$GCC $TOP_DIR/external/rkwifibt/brcm_tools/brcm_patchram_plus1.c -o $TARGET_DIR/usr/bin/brcm_patchram_plus1
 	$GCC $TOP_DIR/external/rkwifibt/brcm_tools/dhd_priv.c -o $TARGET_DIR/usr/bin/dhd_priv
-	install -m 0755 -D $TOP_DIR/external/rkwifibt/S66load_wifi_modules $TARGET_DIR/etc/init.d/
-	sed -i "s/BT_TTY_DEV/\/dev\/$BT_TTY/g" $TARGET_DIR/etc/init.d/S66load_wifi_modules
+	install -m 0755 -D $TOP_DIR/external/rkwifibt/S36load_wifi_modules $TARGET_DIR/etc/init.d/
+	sed -i "s/BT_TTY_DEV/\/dev\/$BT_TTY/g" $TARGET_DIR/etc/init.d/S36load_wifi_modules
 	install -m 0644 -D $TOP_DIR/external/rkwifibt/firmware/broadcom/$BR2_PACKAGE_RKWIFIBT_CHIPNAME/wifi/* $TARGET_DIR/system/etc/firmware/
 	install -m 0755 -D $TOP_DIR/external/rkwifibt/bin/$RK_ARCH/* $TARGET_DIR/usr/bin/
 
@@ -54,7 +54,7 @@ function install_realtek(){
 	make -C $BUILD_DIR/rkwifibt/realtek/rtk_hciattach/ CC=$GCC
 	make -C $TOP_DIR/kernel/ M=$BUILD_DIR/rkwifibt/realtek/bluetooth_uart_driver ARCH=$RK_ARCH CROSS_COMPILE=$CROSS_COMPILE
 	install -m 0755 -D $TOP_DIR/external/rkwifibt/bin/$RK_ARCH/rtwpriv $TARGET_DIR/usr/bin/
-	install -m 0755 -D $TOP_DIR/external/rkwifibt/S66load_wifi_modules $TARGET_DIR/etc/init.d/
+	install -m 0755 -D $TOP_DIR/external/rkwifibt/S36load_wifi_modules $TARGET_DIR/etc/init.d/
 	install -m 0755 -D $TOP_DIR/external/rkwifibt/realtek/rtk_hciattach/rtk_hciattach $TARGET_DIR/usr/bin/rtk_hciattach
 	install -m 0755 -D $TOP_DIR/external/rkwifibt/bin/$RK_ARCH/* $TARGET_DIR/usr/bin/
 	install -m 0644 -D $TOP_DIR/external/rkwifibt/realtek/$BR2_PACKAGE_RKWIFIBT_CHIPNAME/* $TARGET_DIR/lib/firmware/rtlbt/
@@ -71,7 +71,7 @@ function install_realtek(){
 function install_rockchip(){
 	install_common
 	install -m 0644 -D $TOP_DIR/external/rkwifibt/firmware/rockchip/WIFI_FIRMWARE/rk912* $TARGET_DIR/lib/firmware/
-	install -m 0755 -D $TOP_DIR/external/rkwifibt/S66load_wifi_rk912_modules $TARGET_DIR/etc/init.d/
+	install -m 0755 -D $TOP_DIR/external/rkwifibt/S36load_wifi_rk912_modules $TARGET_DIR/etc/init.d/
 }
 echo $BR2_PACKAGE_RKWIFIBT_VENDOR
 if [ $BR2_PACKAGE_RKWIFIBT_VENDOR = "BROADCOM" ];then

@@ -4,8 +4,8 @@ Before=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/S66load_wifi_modules start
-ExecStop=/usr/bin/S66load_wifi_modules stop
+ExecStart=/usr/bin/S36load_wifi_modules start
+ExecStop=/usr/bin/S36load_wifi_modules stop
 
 [Install]
 WantedBy=multi-user.target
